@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#10281E] text-white mt-[350px] overflow-hidden">
+    <footer className="bg-[#10281E] text-white overflow-hidden">
   {/* Top features section */}
   <div className="w-full py-8 border-b border-[#1d3d2f]">
     <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-4">

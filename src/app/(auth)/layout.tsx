@@ -24,7 +24,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
 
       {/* Children Section */}
-      <div className="relative selection:w-full md:w-[66%] h-auto md:h-screen p-4 md:p-0">
+      <div className="relative selection:w-full md:w-[66%] h-[100svh] md:h-screen p-4 md:p-0 overflow-auto">
         <HomeBtn/>
         {children}
       </div>

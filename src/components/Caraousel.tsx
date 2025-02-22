@@ -13,7 +13,7 @@ import "swiper/css/pagination";
 
 const Carousel: React.FC = () => {
   const swiperRef = useRef<SwiperClass | null>(null);
-  const [activeIndex, setActiveIndex] = useState<number>(0); // Store active slide index
+  const [, setActiveIndex] = useState<number>(0); // Store active slide index
 
   return (
     <div className="relative w-full">
@@ -35,7 +35,7 @@ const Carousel: React.FC = () => {
       >
         {slides.map((slide, index) => (
           <SwiperSlide key={index} className="w-full">
-            <div className="relative w-full h-[300px] md:h-[400px] lg:h-[400px]">
+            <div className="relative w-full h-[300px] md:h-[398px] lg:h-[398px]">
               <Image
                 src={slide.image}
                 alt={slide.title}

@@ -1,16 +1,15 @@
 
-import Crousel from "@/components/Crousel";
+import Caraousel from "@/components/Caraousel";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
 export default function Home() {
   
   return (
-    <div className="container">
+    <div className="min-h-screen w-full">
       <Navbar/>
-      <Crousel></Crousel>
+      <Caraousel/>
       <Footer/>
-
     </div>
   );
 }

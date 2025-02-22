@@ -18,3 +18,8 @@ declare interface BottomNavLinks {
     title: string;
     url: string;
 }
+declare interface Slides {
+    title: string;
+    description: string;
+    image: string;
+}

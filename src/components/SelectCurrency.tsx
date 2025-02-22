@@ -18,13 +18,20 @@ const popularCurrencies: SelectCurrencyOptions[] = [
   { currency: "CAD", code: "CA" }, 
 ];
 
-const SelectCurrency = () => {
+const SelectCurrency = ({
+  isOpen,
+  setIsOpen
+} : 
+{
+  isOpen : boolean;
+  setIsOpen : React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [curVal, setCurVal] = useState<SelectCurrencyOptions>({
     currency: "INR",
     code: "IN",
   });
 
-  const [isOpen, setIsOpen] = useState(false);
+  
   const dropdownRef = useRef<HTMLDivElement>(null);
   const chevronRef = useRef<SVGSVGElement>(null);
 
@@ -83,28 +90,30 @@ const SelectCurrency = () => {
       </div>
 
       {/* Dropdown Menu */}
-      <div
-        ref={dropdownRef}
-        className="absolute mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-10"
-      >
-        {popularCurrencies.map((currency) => (
+      {isOpen && 
           <div
-            key={currency.code}
-            className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100"
-            onClick={() => {
-              setCurVal(currency);
-              toggleDropdown();
-            }}
-          >
-            <ReactCountryFlag
-              countryCode={currency.code}
-              svg
-              style={{ width: "20px", height: "15px", borderRadius: "3px" }}
-            />
-            <span className="text-gray-800">{currency.currency}</span>
-          </div>
-        ))}
-      </div>
+          ref={dropdownRef}
+          className="absolute mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-10"
+        >
+          {popularCurrencies.map((currency) => (
+            <div
+              key={currency.code}
+              className="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-100"
+              onClick={() => {
+                setCurVal(currency);
+                toggleDropdown();
+              }}
+            >
+              <ReactCountryFlag
+                countryCode={currency.code}
+                svg
+                style={{ width: "20px", height: "15px", borderRadius: "3px" }}
+              />
+              <span className="text-gray-800">{currency.currency}</span>
+            </div>
+          ))}
+        </div>
+      }
     </div>
   );
 };

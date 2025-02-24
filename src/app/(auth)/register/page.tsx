@@ -9,6 +9,7 @@ import { popping } from '@/utils/fonts';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
+import { useRouter } from 'next/navigation'; 
 
 // Define the validation schema using Zod
 const signupSchema = z.object({
@@ -18,7 +19,8 @@ const signupSchema = z.object({
     .min(8, 'Password must be at least 8 characters')
     .max(25, 'Password is too long'),
   confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
+})
+.refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],
 });
@@ -29,6 +31,7 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter();
 
   const formik = useFormik<SignupFormValues>({
     initialValues: {
@@ -46,6 +49,7 @@ const Signup = () => {
          await axios.post("http://localhost:3000/api/auth/register" , values)
           console.log(values)
           alert("Registered Successfully")
+          router.push("/")
         } catch (error) {
           console.log(error)
         }

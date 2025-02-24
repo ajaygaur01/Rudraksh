@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.4.0",
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "country-flag-icons": "^1.5.18",
     "formik": "^2.4.6",

@@ -8,6 +8,7 @@ import Google from '@/components/Google';
 import { popping } from '@/utils/fonts';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
+import axios from 'axios';
 
 // Define the validation schema using Zod
 const signupSchema = z.object({
@@ -41,11 +42,19 @@ const Signup = () => {
       try {
         console.log('Form submitted:', values);
         // Add your signup logic here
+        try {
+          axios.post("http://localhost:3000/api/auth/register" , values)
+          console.log(values)
+          alert("Registered Successfully")
+        } catch (error) {
+          console.log(error)
+        }
       } catch (error) {
         console.error('Signup failed:', error);
       }
     }
   });
+
 
   return (
     <div className="min-h-screen flex items-center justify-center mt-[25px]">
@@ -96,7 +105,7 @@ const Signup = () => {
             <label
               htmlFor="name"
               className="block text-lg font-poppins font-medium text-gray-700 mb-2"
-            >
+          >
               Full Name
             </label>
             <input

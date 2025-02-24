@@ -43,7 +43,7 @@ const Signup = () => {
         console.log('Form submitted:', values);
         // Add your signup logic here
         try {
-          axios.post("http://localhost:3000/api/auth/register" , values)
+         await axios.post("http://localhost:3000/api/auth/register" , values)
           console.log(values)
           alert("Registered Successfully")
         } catch (error) {

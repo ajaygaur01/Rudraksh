@@ -8,6 +8,9 @@ import Google from '@/components/Google';
 import { popping } from '@/utils/fonts';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation'; 
+
 
 // Define the validation schema using Zod
 const loginSchema = z.object({
@@ -17,12 +20,17 @@ const loginSchema = z.object({
     .max(25, 'Password is too long'),
 });
 
+
+
 // TypeScript type for form values
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter()
 
+
+
+  const [showPassword, setShowPassword] = useState(false);
   const formik = useFormik<LoginFormValues>({
     initialValues: {
       email: '',
@@ -33,6 +41,18 @@ const Login = () => {
       try {
         console.log('Form submitted:', values);
         // Add your login logic here
+        try {
+          await axios.post("http://localhost:3000/api/auth/login" , values)
+          console.log(values)
+          alert("Registered Successfully")
+          router.push("/")
+
+
+        } catch (error) {
+          console.log(error)
+          alert("error while login")
+        }
+
       } catch (error) {
         console.error('Login failed:', error);
       }

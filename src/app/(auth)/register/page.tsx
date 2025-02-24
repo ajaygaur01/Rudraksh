@@ -57,8 +57,8 @@ const Signup = () => {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center mt-[25px]">
-      <div className="max-w-[45%] w-full px-6 py-8 rounded-lg shadow-lg bg-white ">
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="max-w-[45%] w-full px-6 py-4 rounded-lg shadow-lg bg-white ">
         {/* Logo - Centered and Larger */}
         <div className="flex justify-center mb-4">
           <Image
@@ -71,7 +71,7 @@ const Signup = () => {
         </div>
 
         {/* Welcome Text */}
-        <div className="flex flex-col items-center mb-8">
+        <div className="flex flex-col items-center mb-3">
           <h2 className={`text-4xl ${popping.className} text-center text-[#8B5E3C] font-bold`}>
             Join Rudraksh
           </h2>
@@ -87,7 +87,7 @@ const Signup = () => {
         </button>
 
         {/* Divider */}
-        <div className="relative mb-4">
+        <div className="relative mb-0">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300" />
           </div>
@@ -101,7 +101,7 @@ const Signup = () => {
         {/* Form */}
         <form onSubmit={formik.handleSubmit}>
           {/* Name Input */}
-          <div className="mb-6">
+          <div className="mb-1">
             <label
               htmlFor="name"
               className="block text-lg font-poppins font-medium text-gray-700 mb-2"
@@ -127,7 +127,7 @@ const Signup = () => {
           </div>
 
           {/* Email Input */}
-          <div className="mb-6">
+          <div className="mb-1">
             <label
               htmlFor="email"
               className="block text-lg font-poppins font-medium text-gray-700 mb-2"
@@ -153,7 +153,7 @@ const Signup = () => {
           </div>
 
           {/* Password Input */}
-          <div className="mb-6">
+          <div className="mb-1">
             <label
               htmlFor="password"
               className="block text-lg font-poppins font-medium text-gray-700 mb-2"
@@ -192,7 +192,7 @@ const Signup = () => {
           </div>
 
           {/* Confirm Password Input */}
-          <div className="mb-6">
+          <div className="mb-4">
             <label
               htmlFor="confirmPassword"
               className="block text-lg font-poppins font-medium text-gray-700 mb-2"
@@ -240,7 +240,7 @@ const Signup = () => {
         </form>
 
         {/* Login Link */}
-        <div className="mt-6 text-center">
+        <div className="mt-2 text-center">
           <span className="text-sm text-gray-600 font-poppins">Already have an account?</span>
           <Link
             href="/login"

@@ -23,3 +23,9 @@ declare interface Slides {
     description: string;
     image: string;
 }
+declare interface UserType { 
+    id: string;
+    name: string;
+    email: string; 
+    role: boolean 
+}

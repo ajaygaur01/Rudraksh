@@ -40,7 +40,7 @@ const Carousel: React.FC = () => {
                 src={slide.image}
                 alt={slide.title}
                 fill
-                className="object-contain w-full h-full"
+                className="object-center w-full"
                 priority={index === 0}
               />
             </div>

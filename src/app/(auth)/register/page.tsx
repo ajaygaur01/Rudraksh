@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation'; 
-
+import { getProviders, signIn } from "next-auth/react";
 // Define the validation schema using Zod
 const signupSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -32,6 +32,23 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
+  // Function to handle Google Sign-In
+  const handleGoogleSignIn = async () => {
+    try {
+      await signIn("google", { callbackUrl: "/" }); // Redirect to homepage after Google Sign-In
+    } catch (error) {
+      console.error("Google Sign-In failed:", error);
+      alert("Google Sign-In failed. Please try again.");
+    }
+  };
+
+
+
+
+
+
+
+
 
   const formik = useFormik<SignupFormValues>({
     initialValues: {
@@ -85,7 +102,9 @@ const Signup = () => {
         </div>
 
         {/* Google Sign-Up Button */}
-        <button className="w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 flex items-center justify-center mb-4">
+        <button className="w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 flex items-center justify-center mb-4"
+        onClick={handleGoogleSignIn}
+        >
           <Google />
           <span className="ml-2">Continue with Google</span>
         </button>

@@ -1,13 +1,41 @@
-import NextAuth from "next-auth"
+import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-const handler = NextAuth({
-    providers: [
-        GoogleProvider({
-          clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET  ?? ""
-        })
-      ]
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
 
-})
+const prisma = new PrismaClient();
 
-export { handler as GET, handler as POST }
+export const authOptions = {
+  adapter: PrismaAdapter(prisma),
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+    }),
+  ],
+  session: {
+    strategy: "jwt",
+  },
+  callbacks: {
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+      }
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/auth/signin", // Optional: Custom sign-in page
+  },
+};
+
+// App Router requires using `export { handler as GET, handler as POST }`
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };

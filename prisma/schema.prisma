@@ -15,14 +15,63 @@ datasource db {
 
 
 
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([provider, providerAccountId])
+}
+ 
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@map("sessions")
+}
 
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+ 
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  userDetails   UserDetails? @relation("UserToUserDetails") // Only define relation name here
+}
 
 model UserDetails {
   id        String    @id @default(uuid())
+  userId    String?   @unique // Make optional for OAuth users
+  user      User?     @relation("UserToUserDetails", fields: [userId], references: [id]) // Define relation properly here
   name      String
   email     String    @unique
-  password  String
+  password  String?   // Nullable for OAuth users
   role      Boolean
   addresses Address[] 
   orders    Order[]
@@ -30,6 +79,9 @@ model UserDetails {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
+
+
+
 
 model Address {
   id        String   @id @default(uuid())

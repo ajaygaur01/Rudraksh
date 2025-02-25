@@ -13,8 +13,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
-    const user = await prisma.userDetails.findUnique({ where: { email } });
+    // Fetch user, but only if they have a password (excludes OAuth users)
+    const user = await prisma.userDetails.findFirst({
+      where: {
+        email,
+        password: { not: null }, // Ensure the user has a password (not an OAuth user)
+      },
+    });
+
     if (!user) {
+      return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+    }
+
+    // Ensure password exists before comparing
+    if (!user.password) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }
 
@@ -40,7 +52,7 @@ export async function POST(req: Request) {
       name: "auth_token",
       value: token,
       httpOnly: true, // Prevents access from JavaScript (XSS protection)
-      secure: process.env.NODE_ENV === "production", // Only secure in production
+      secure: process.env.NODE_ENV === "production", // Secure in production
       sameSite: "strict", // Prevent CSRF attacks
       path: "/",
       maxAge: 3600, // 1 hour expiration

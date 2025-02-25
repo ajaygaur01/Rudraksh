@@ -13,13 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Account {
   id                String  @id @default(cuid())
   userId            String
-  provider          String
-  providerAccountId String  @unique
   type              String
+  provider          String
+  providerAccountId String
   refresh_token     String?
   access_token      String?
   expires_at        Int?
@@ -27,7 +26,9 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
 
  

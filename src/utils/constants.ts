@@ -69,3 +69,31 @@ export const slides : Slides[] = [
       image: "/images/banners/banner.webp"
     }
 ];
+
+export const collections : CollectionItems[] = [
+    {
+      id: 1,
+      title: 'Stone & Crystal Mala',
+      image: '/images/listings/Jaap-Mala.jpg',
+      href: '/collections/stone-crystal-mala'
+    },
+    {
+      id: 2,
+      title: 'Rudraksha & Wood Mala',
+      image: '/images/listings/RudrakshaMala.webp',
+      href: '/collections/rudraksha-wood-mala',
+      badge: 'BEST OFFER'
+    },
+    {
+      id: 4,
+      title: '1 to 14 Mukhi Combination',
+      image: '/images/listings/14Mukhi.jpg',
+      href: '/collections/mukhi-combination'
+    },
+    {
+      id: 3,
+      title: 'Bracelets',
+      image: '/images/listings/bracelet.jpg',
+      href: '/collections/bracelets'
+    },
+  ];

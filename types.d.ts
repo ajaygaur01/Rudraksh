@@ -29,3 +29,11 @@ declare interface UserType {
     email: string; 
     role: boolean 
 }
+
+declare interface CollectionItems {
+    id : number;
+    title : string;
+    image : string;
+    href : string;
+    badge ?: string;
+}

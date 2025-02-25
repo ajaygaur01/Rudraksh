@@ -48,9 +48,9 @@ const Navbar = () => {
         }`}
         style={{ height: "60px" }} // Adjust based on your design
       >
-        <div className="flex-between h-full">
-          <div className="px-8 py-3 inline-flex align-baseline gap-6">
-            <AlignJustify size={40} strokeWidth={1.2} color="#1f2937" />
+        <div className="flex-between h-full shadow-lg md:shadow-none">
+          <div className="md:px-8 py-3 inline-flex align-baseline gap-6">
+            <AlignJustify size={40} strokeWidth={1.2} color="#1f2937" className='hidden md:block' />
             <Image
               src="/images/logos/Logo.svg"
               alt="Nepa Rudraksha"
@@ -59,7 +59,7 @@ const Navbar = () => {
               className="h-10 w-auto px-10"
             />
           </div>
-          <div className="px-8 py-3 inline-flex flex-center gap-6">
+          <div className="hidden md:inline-flex px-8 py-3 flex-center gap-6">
             <Input searchVal={searchVal} setSearchVal={setSearchVal} className="mr-2" />
             {TopNavIcon.map((icon, index) => (
               <NavIcon key={index} Icon={icon.Icon} url={icon.url} />
@@ -69,15 +69,23 @@ const Navbar = () => {
               setIsOpen={setIsOpen}
             />
           </div>
+          <div className='block md:hidden'>
+            <AlignJustify size={40} strokeWidth={1.2} color="#1f2937" className='mx-5' />
+          </div>
         </div>
       </nav>
 
       {/* Fixed Nav Links (Positioned Below the Top Section) */}
       <div
-        className={`w-full ${isScrollingDown ?  ' top-0' : 'top-[60px]'} fixed left-0 flex justify-center items-center py-4 border-b border-gray-100 bg-white z-40 shadow-md transition-transform duration-300`}
+        className={`w-full hidden md:block ${
+          isScrollingDown ? "top-0" : "top-[60px]"
+        } fixed left-0 py-4 border-b border-gray-100 bg-white z-40 shadow-md transition-transform duration-300`}
       >
+      <div className="
+        md:grid grid-flow-col grid-cols-auto-fit min-[100px] justify-center  gap-2 min-[800px]:gap-6 min-[1000px]:gap-12  px-5 md:px-8
+      ">
         {ButtonNavLinks.map((link, index) => (
-          <div key={index} className="relative px-5 md:px-8">
+          <div key={index} className="relative text-center">
             <span
               className={`text-base font-medium cursor-pointer ${
                 link.title === "whatever"
@@ -100,9 +108,11 @@ const Navbar = () => {
           </div>
         ))}
       </div>
+      </div>
+
 
       {/* Space to prevent content overlap */}
-      <div className="h-[85px]"></div>
+      <div className="md:h-[85px]"></div>
     </>
   );
 };

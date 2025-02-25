@@ -35,12 +35,12 @@ const Carousel: React.FC = () => {
       >
         {slides.map((slide, index) => (
           <SwiperSlide key={index} className="w-full">
-            <div className="relative w-full h-[300px] md:h-[398px] lg:h-[398px]">
+            <div className="relative w-full h-[400px]">
               <Image
                 src={slide.image}
                 alt={slide.title}
                 fill
-                className="object-center w-full"
+                className="object-center h-full"
                 priority={index === 0}
               />
             </div>

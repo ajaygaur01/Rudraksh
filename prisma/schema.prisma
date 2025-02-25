@@ -84,7 +84,6 @@ model ProductDetails {
   name        String
   category    String[] 
   description String?
-  image       String[]
   price       Int
   stock       Int
   createdAt   DateTime    @default(now())

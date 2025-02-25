@@ -13,16 +13,14 @@ export const authOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
+  session: { strategy: "jwt" },
   callbacks: {
     async signIn({ account, profile }) {
-      console.log("OAuth Sign-In:", account, profile);
+      console.log("OAuth Sign-In Attempt:", account, profile);
       return true;
     },
     async session({ session, token }) {
-      console.log("Session:", session, token);
+      console.log("Session Created:", session, token);
       if (token) {
         session.user.id = token.sub;
       }

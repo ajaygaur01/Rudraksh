@@ -14,13 +14,12 @@ datasource db {
 }
 
 
-
 model Account {
   id                String  @id @default(cuid())
   userId            String
-  type              String
   provider          String
-  providerAccountId String
+  providerAccountId String  @unique
+  type              String
   refresh_token     String?
   access_token      String?
   expires_at        Int?
@@ -28,19 +27,16 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-  user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
  
 model Session {
   id           String   @id @default(cuid())
-  sessionToken String   @unique @map("session_token")
-  userId       String   @map("user_id")
+  sessionToken String   @unique
+  userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
-  @@map("sessions")
 }
 
 model VerificationToken {
@@ -61,16 +57,17 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-
-  userDetails   UserDetails? @relation("UserToUserDetails") // Only define relation name here
+  
+  // Define relation without specifying `fields` and `references`
+  userDetails   UserDetails? @relation("UserToUserDetails")
 }
 
 model UserDetails {
   id        String    @id @default(uuid())
-  userId    String?   @unique // Make optional for OAuth users
-  user      User?     @relation("UserToUserDetails", fields: [userId], references: [id]) // Define relation properly here
+  userId    String    @unique // Required for linking OAuth users
+  user      User      @relation("UserToUserDetails", fields: [userId], references: [id]) // Define relation properly here
   name      String
-  email     String    @unique
+  email     String?   @unique  // Make nullable for OAuth users
   password  String?   // Nullable for OAuth users
   role      Boolean
   addresses Address[] 
@@ -79,7 +76,6 @@ model UserDetails {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
-
 
 
 

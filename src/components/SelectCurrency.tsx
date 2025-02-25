@@ -20,10 +20,10 @@ const popularCurrencies: SelectCurrencyOptions[] = [
 ];
 
 const SelectCurrency = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
-  const { code,currency, setCurrency } = useCurrencyStore();
+  const { code, setCurrency } = useCurrencyStore();
   const [selectedCurrency, setSelectedCurrency] = useState<SelectCurrencyOptions | null>({
-    code : code,
-    currency : currency,
+    code : null,
+    currency : null,
   });
   
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -70,7 +70,7 @@ const SelectCurrency = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: Rea
   return (
     <div className="relative w-32">
       <div
-        className="flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
+        className={`flex items-center ${selectedCurrency?.code ? "justify-between" : "justify-end"}  px-3 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100`}
         onClick={toggleDropdown}
       >
         {

@@ -98,7 +98,7 @@ const RudrakshaCollection : React.FC = () =>  {
             className="block relative group overflow-hidden rounded-lg"
             ref={(el) => setCollectionRef(el, index)}
           >
-            <div className="relative h-80 w-full">
+            <div className="relative h-40 md:h-80 w-full">
               <Image 
                 src={collection.image}
                 alt={collection.title}
@@ -112,7 +112,7 @@ const RudrakshaCollection : React.FC = () =>  {
               </div>
               
               {collection.badge && (
-                <div className="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 text-sm font-semibold rounded animate-pulse">
+                <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-red-600 text-white px-2 py-1 md:px-3 text-[10px] md:text-sm font-semibold rounded animate-pulse">
                   {collection.badge}
                 </div>
               )}

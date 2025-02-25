@@ -10,8 +10,8 @@ interface CurrencyState {
 const useCurrencyStore = create<CurrencyState>()(
   persist(
     (set) => ({
-      currency: null,
-      code: null,
+      currency: "INR",
+      code: "IN",
       setCurrency: (currency, code) => set({ currency, code }),
     }),
     {

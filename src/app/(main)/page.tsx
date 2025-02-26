@@ -3,6 +3,7 @@ import Caraousel from "@/components/Caraousel";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import RudrakshaCollection from "@/components/RudrakhsaCollection";
+import RudrakshaShowCase from "@/components/RudraShowCase";
 
 export default function Home() {
   
@@ -11,6 +12,7 @@ export default function Home() {
       <Navbar/>
       <Caraousel/>
       <RudrakshaCollection/>
+      <RudrakshaShowCase/>
       <Footer/>
     </div>
   );

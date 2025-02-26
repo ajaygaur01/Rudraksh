@@ -63,7 +63,9 @@ const Signup = () => {
         console.log('Form submitted:', values);
         // Add your signup logic here
         try {
-         await axios.post("http://localhost:3000/api/auth/register" , values)
+         await axios.post("http://localhost:3000/api/auth/register" , values , {
+          headers: { "Content-Type": "application/json" }
+         })
           console.log(values)
           alert("Registered Successfully")
           router.push("/")

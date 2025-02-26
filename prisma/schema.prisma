@@ -66,6 +66,7 @@ model UserDetails {
   cart      Cart?
   orders    Order[]
   user      User      @relation("UserToUserDetails", fields: [userId], references: [id])
+  lastLogin DateTime?
 }
 
 model Address {

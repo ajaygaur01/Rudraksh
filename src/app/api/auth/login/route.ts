@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { sendWelcomeEmail } from "@/utils/sendEmail";
+
 
 
 const prisma = new PrismaClient();
@@ -43,10 +43,7 @@ export async function POST(req: Request) {
       process.env.JWT_SECRET!,
       { expiresIn: "7d" }
     );
-// Send Welcome Email (async, so login isn't delayed)
-if (!user.lastLogin) {
-  await sendWelcomeEmail(user.email);
-}
+
 
     // Create response and set the cookie
     const response = NextResponse.json(

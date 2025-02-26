@@ -1,25 +1,24 @@
 import nodemailer from "nodemailer";
 
-export async function sendWelcomeEmail(userEmail: string) {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail", // Change this if using another service (e.g., SendGrid, AWS SES)
-      auth: {
-        user: process.env.EMAIL_USER, // Your email address
-        pass: process.env.EMAIL_PASS, // Your email password or App password
-      },
-    });
+export const sendResetEmail = async (email: string, resetUrl: string) => {
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: userEmail,
-      subject: "Welcome to Our Platform 🎉",
-      html: `<h1>Welcome!</h1><p>We're excited to have you on board.</p>`,
-    };
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Password Reset Request",
+    html: `
+      <p>You requested a password reset.</p>
+      <p>Click <a href="${resetUrl}">here</a> to reset your password.</p>
+      <p>If you did not request this, please ignore this email.</p>
+    `,
+  };
 
-    await transporter.sendMail(mailOptions);
-    console.log("Welcome email sent successfully.");
-  } catch (error) {
-    console.error("Error sending welcome email:", error);
-  }
-}
+  await transporter.sendMail(mailOptions);
+};

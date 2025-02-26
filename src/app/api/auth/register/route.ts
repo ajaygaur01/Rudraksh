@@ -1,69 +1,97 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken"; // Install via npm if not already installed
+import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password } = await req.json();
+    // Parse request body
+    const body = await req.json();
+    console.log("Received body:", body);
+
+    if (!body || Object.keys(body).length === 0) {
+      return NextResponse.json({ error: "Invalid request. No data received." }, { status: 400 });
+    }
+
+    const { name, email, password } = body;
+
     if (!name || !email || !password) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
-    }
-    if (password.length < 8) {
-      return NextResponse.json({ error: "Password must be at least 8 characters long" }, { status: 400 });
+
+    // Check if user with this email already exists
+    const existingUserDetails = await prisma.userDetails.findUnique({ where: { email } });
+    if (existingUserDetails) {
+      return NextResponse.json({ error: "Email already in use" }, { status: 400 });
     }
 
-    const existingUser = await prisma.userDetails.findUnique({ where: { email } });
-    if (existingUser) {
-      return NextResponse.json({ error: "Email already in use" }, { status: 400 });
+    // Create or find a User record first
+    let user = await prisma.user.findUnique({ where: { email } });
+    
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          email,
+          name,
+        }
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await prisma.userDetails.create({
+    // Now create the UserDetails record
+    const userDetails = await prisma.userDetails.create({
       data: {
+        id: crypto.randomUUID(),
         name,
         email,
         password: hashedPassword,
         role: false,
+        userId: user.id, // This links to the User record we created above
       },
     });
 
-    // Generate a JWT token
-    const token = jwt.sign({ userId: user.id, email: user.email },process.env.JWT_SECRET!, { expiresIn: "7d" });
+    console.log("✅ UserDetails created:", userDetails);
 
-    // Set the cookie in the response
+    // Check if JWT_SECRET exists
+    if (!process.env.JWT_SECRET) {
+      console.error("❌ JWT_SECRET environment variable is not defined");
+      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+    }
+
+    const token = jwt.sign(
+      { userId: userDetails.id, email: userDetails.email }, 
+      process.env.JWT_SECRET, 
+      { expiresIn: "7d" }
+    );
+    console.log("✅ Generated Token:", token);
+
+    // Return response with cookies
     const response = NextResponse.json(
       {
         message: "User created successfully",
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
+        user: { 
+          id: userDetails.id, 
+          name: userDetails.name, 
+          email: userDetails.email, 
+          role: userDetails.role 
         },
       },
       { status: 201 }
     );
 
-    response.cookies.set({
-      name: "auth_token",
-      value: token,
-      httpOnly: true, // Prevent client-side access
-      secure: process.env.NODE_ENV === "production", // Only secure in production
+    response.cookies.set("auth_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
     });
 
     return response;
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error("❌ Error creating user:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   } finally {
     await prisma.$disconnect();

@@ -12,6 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
 const RudrakshaShowCase = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const subHeadingRef = useRef<HTMLAnchorElement>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [maxScroll, setMaxScroll] = useState(0);
   const [showLeftButton, setShowLeftButton] = useState(false);
@@ -42,26 +43,43 @@ const RudrakshaShowCase = () => {
     };
   }, []);
 
+  // Animate Heading & Subheading Text
   useEffect(() => {
-    if (headingRef.current) {
+    const animateText = (element: HTMLElement | null) => {
+      if (!element) return;
+      const text = element.innerText;
+      element.innerHTML = text
+        .split("")
+        .map((char) =>
+          char === " "
+            ? `<span>&nbsp;</span>`
+            : `<span style="display:inline-block">${char}</span>`
+        )
+        .join("");
+
+      const chars = element.querySelectorAll("span");
+
       gsap.fromTo(
-        headingRef.current,
-        { opacity: 0, scale: 0.5, rotation: -10, skewX: 20 },
+        chars,
+        { opacity: 0, y: 50, rotateX: -90 },
         {
           opacity: 1,
-          scale: 1,
-          rotation: 0,
-          skewX: 0,
-          duration: 1.2,
-          ease: "elastic.out(1, 0.5)",
+          y: 0,
+          rotateX: 0,
+          stagger: 0.02,
+          ease: "power4.out",
+          duration: 0.5,
           scrollTrigger: {
-            trigger: headingRef.current,
-            start: "top 80%",
+            trigger: element,
+            start: "top 85%",
             toggleActions: "play none none none",
           },
         }
       );
-    }
+    };
+
+    animateText(headingRef.current);
+    animateText(subHeadingRef.current);
   }, []);
 
   const handleScroll = (direction: "left" | "right") => {
@@ -98,16 +116,21 @@ const RudrakshaShowCase = () => {
           <div className="text-center md:text-left mb-4 md:mb-0">
             <h1
               ref={headingRef}
-              className={`${popping.className} text-3xl sm:text-4xl md:text-5xl font-medium md:font-normal text-stone-800`}
+              className={`${popping.className} text-2xl sm:text-3xl md:text-4xl font-medium md:font-normal text-stone-800`}
             >
-              All Combinations
+              Holy & Powerful Rudraksha
             </h1>
-            <a
-              href="#"
-              className="text-amber-600 hover:text-amber-700 hover:underline mt-1 inline-block"
-            >
-              Explore Our Best Combinations
-            </a>
+            <div>
+              <a
+                ref={subHeadingRef}
+                href="#"
+                className="group text-amber-600 hover:text-amber-700  mt-1 inline-block"
+              >
+                Explore Our Most Sacred Rudraksha Selections
+                
+              </a>
+              
+            </div>
           </div>
 
           {/* Navigation buttons for larger screens */}

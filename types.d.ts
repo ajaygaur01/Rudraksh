@@ -37,3 +37,12 @@ declare interface CollectionItems {
     href : string;
     badge ?: string;
 }
+
+declare interface ProductShow    {
+    id: number,
+    name: string,
+    originalPrice: string,
+    currentPrice: string,
+    image: string,
+    description ?: string
+}

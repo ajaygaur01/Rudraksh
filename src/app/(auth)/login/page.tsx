@@ -48,9 +48,13 @@ const Login = () => {
           router.push("/")
 
 
-        } catch (error) {
+        } catch (error: unknown) {
           console.log(error)
-          alert("error while login")
+          if (axios.isAxiosError(error) && error.response) {
+            alert(error.response.data.error);
+          } else {
+            alert('Can\'t login check your email or password');
+          }
         }
 
       } catch (error) {

@@ -26,7 +26,7 @@ export default function CollectionShowcase() {
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 />
                 {/* Best offer tag */}
-                <div className="absolute top-[20%] right-0 bg-red-600 text-white text-xs font-bold py-1 px-3 rounded-l-md">
+                <div className="absolute top-[10%] right-0 bg-red-600 text-white text-xs font-bold py-1 px-3 rounded-l-md">
                   BEST OFFER!
                 </div>
 

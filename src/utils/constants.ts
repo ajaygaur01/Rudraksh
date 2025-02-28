@@ -288,7 +288,7 @@ export const products: ProductShow[] = [
     name: "3 Mukhi Rudraksha Mala",
     originalPrice: "Rs. 3,000.00",
     currentPrice: "Rs. 2,500.00",
-    image: "/placeholder.svg?height=400&width=400",
+    image: "/images/Collections/Rudraksha/3mukhi.webp",
     description: "Lab-certified Indonesian Rudraksha mala",
   },
   {
@@ -296,7 +296,7 @@ export const products: ProductShow[] = [
     name: "4 Mukhi Rudraksha mala",
     originalPrice: "Rs. 2,200.00",
     currentPrice: "Rs. 1,800.00",
-    image: "/placeholder.svg?height=400&width=400",
+    image: "/images/Collections/Rudraksha/4mukhii.webp",
     description: "Lab-certified Indonesian Rudraksha mala",
   },
   {
@@ -304,7 +304,7 @@ export const products: ProductShow[] = [
     name: "5 mukhi rudraksha mala with 108+1 beads",
     originalPrice: "Rs. 750.00",
     currentPrice: "Rs. 599.00",
-    image: "/placeholder.svg?height=400&width=400",
+    image: "/images/Collections/Rudraksha/5mukhi.png",
     description: "Lab-certified Indonesian Rudraksha mala",
   },
   {
@@ -312,7 +312,7 @@ export const products: ProductShow[] = [
     name: "6 Mukhi Rudraksha mala",
     originalPrice: "Rs. 2,200.00",
     currentPrice: "Rs. 1,800.00",
-    image: "/placeholder.svg?height=400&width=400",
+    image: "/images/Collections/Rudraksha/6mukhi.webp",
     description: "Lab-certified Indonesian Rudraksha mala",
   },
   {
@@ -320,7 +320,7 @@ export const products: ProductShow[] = [
     name: "7 Mukhi Rudraksha mala",
     originalPrice: "Rs. 4,500.00",
     currentPrice: "Rs. 3,999.00",
-    image: "/placeholder.svg?height=400&width=400",
+    image: "/images/Collections/Rudraksha/7Mukhi.webp",
     description: "Lab-certified Indonesian Rudraksha mala",
   },
   {
@@ -328,7 +328,7 @@ export const products: ProductShow[] = [
     name: "8 Mukhi Rudraksha Mala",
     originalPrice: "Rs. 2,500.00",
     currentPrice: "Rs. 2,000.00",
-    image: "/placeholder.svg?height=400&width=400",
+    image: "/images/Collections/Rudraksha/8mukhii.webp",
     description: "Lab-certified Indonesian Rudraksha mala",
   },
   {
@@ -336,7 +336,7 @@ export const products: ProductShow[] = [
     name: "9 Mukhi Rudraksha Mala",
     originalPrice: "Rs. 3,000.00",
     currentPrice: "Rs. 2,500.00",
-    image: "/placeholder.svg?height=400&width=400",
+   image: "/images/Collections/Rudraksha/9mukhi.webp",
     description: "Lab-certified Indonesian Rudraksha mala",
   },
 ]

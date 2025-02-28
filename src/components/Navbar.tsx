@@ -53,7 +53,7 @@ const Navbar = () => {
             <AlignJustify size={40} strokeWidth={1.2} color="#1f2937" className='hidden md:block' />
             <Image
               src="/images/logos/Logo.svg"
-              alt="Nepa Rudraksha"
+              alt="Rishi Rudraksha"
               width={140}
               height={40}
               className="h-10 w-auto px-10"

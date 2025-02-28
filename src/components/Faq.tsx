@@ -30,9 +30,9 @@ export default function FAQ() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
-              <AccordionTrigger className="text-lg">Why Nepa Rudraksha?</AccordionTrigger>
+              <AccordionTrigger className="text-lg">Why Rishi Rudraksha?</AccordionTrigger>
               <AccordionContent className="text-base">
-                Nepalese Rudraksha is highly valued for its authenticity, quality, and spiritual significance. Nepal&apos;s
+                Rishikesh Rudraksha is highly valued for its authenticity, quality, and spiritual significance. Rishil&apos;s
                 climate and altitude create ideal conditions for growing the finest Rudraksha trees.
               </AccordionContent>
             </AccordionItem>

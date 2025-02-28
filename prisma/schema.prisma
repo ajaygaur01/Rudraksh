@@ -105,9 +105,13 @@ model CartItem {
   cartId    String
   productId String
   quantity  Int
+
   cart      Cart           @relation(fields: [cartId], references: [id])
   product   ProductDetails @relation(fields: [productId], references: [id])
+
+  @@unique([cartId, productId])  
 }
+
 
 model Order {
   id        String      @id @default(uuid())

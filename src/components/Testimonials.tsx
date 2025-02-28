@@ -15,7 +15,7 @@ export default function TestimonialsSection() {
       <div className="container mx-auto px-[50px] max-w-6xl">
         <div className="relative text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-semibold text-amber-800 mb-4">
-            Transformed My Life: A Surprising Experience With Nepa Rudraksha
+            Transformed My Life: A Surprising Experience With Rishi Rudraksha
           </h2>
           <p className="text-gray-900 md:px-[10%] px-[15%]">
             Our products are genuine, sourced from trusted suppliers, and undergo strict quality checks. Shop with confidence in a secure and transparent environment.

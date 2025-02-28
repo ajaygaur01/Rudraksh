@@ -73,7 +73,7 @@ const Footer = () => {
       <div>
         <h3 className="text-amber-500 font-medium mb-6">OUR BRANDS</h3>
         <ul className="space-y-4">
-          <li><Link href="/why-nepa" className="text-white hover:text-amber-400 transition-colors">Why Shiv Rudraksha?</Link></li>
+          <li><Link href="/why-Rishi" className="text-white hover:text-amber-400 transition-colors">Why Shiv Rudraksha?</Link></li>
           <li><Link href="/certification" className="text-white hover:text-amber-400 transition-colors">Certification and Guarantee</Link></li>
           <li><Link href="/review" className="text-white hover:text-amber-400 transition-colors">Write us a Review</Link></li>
           <li><Link href="/terms" className="text-white hover:text-amber-400 transition-colors">Terms of Service</Link></li>

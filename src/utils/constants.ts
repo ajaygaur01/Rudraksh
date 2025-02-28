@@ -181,3 +181,96 @@ export const rudrakshaItems: ProductShow[] = [
   },
   // You can add Mukhi 11 to 21 similarly with their descriptions.
 ];
+
+export const testimonials: Testimonial[] = [
+  {
+    id: 1,
+    name: "Anant P.",
+    location: "San Jose, CA",
+    rating: 5,
+    timeAgo: "9 hours ago",
+    comment: "Highly recommended! Exceptional Quality",
+    avatarColor: "bg-purple-200",
+    avatarInitial: "A",
+  },
+  {
+    id: 2,
+    name: "Yohan S.",
+    location: "Unknown",
+    rating: 5,
+    timeAgo: "8 days ago",
+    comment: "It was a great experience, very good customer service, and smooth delivery",
+    avatarColor: "bg-teal-500",
+    avatarInitial: "Y",
+  },
+  {
+    id: 3,
+    name: "Vyshnavl B.",
+    location: "Unknown",
+    rating: 5,
+    timeAgo: "2 days ago",
+    comment:
+      "Very much impressed with the packaging...authentic Rudrakshas...really happy with the order. Har har mahadev Om namah parvathi pathaye har har mahadev🙏",
+    avatarColor: "bg-purple-500",
+    avatarInitial: "V",
+  },
+  {
+    id: 4,
+    name: "Rahul M.",
+    location: "Mumbai, India",
+    rating: 5,
+    timeAgo: "1 week ago",
+    comment: "The Rudraksha beads are of excellent quality. I can feel the positive energy. Thank you!",
+    avatarColor: "bg-amber-500",
+    avatarInitial: "R",
+  },
+  {
+    id: 5,
+    name: "Priya K.",
+    location: "Delhi, India",
+    rating: 5,
+    timeAgo: "3 days ago",
+    comment: "Fast shipping and beautiful packaging. The Rudraksha has brought peace to my life.",
+    avatarColor: "bg-emerald-500",
+    avatarInitial: "P",
+  },
+]
+
+export const blogPosts: BlogPost[] = [
+  {
+    id: "5",
+    title: "How to Choose the Right Rudraksha for Yourself?",
+    excerpt: "Choosing the right Rudraksha depends on your needs and spiritual goals. Learn how to select the best Rudraksha bead based on your zodiac sign and energy requirements...",
+    image: "/images/blogs/best.webp",
+    slug: "choose-right-rudraksha"
+  },
+  {
+    id: "1",
+    title: "Different Types of Rudraksha and Their Significance",
+    excerpt: "Rudraksha beads come in various types, each with unique benefits and spiritual significance. From one Mukhi to twenty-one Mukhi, discover the hidden power...",
+    image: "/images/blogs/types.webp",
+    slug: "different-types-of-rudraksha"
+  },
+  {
+    id: "2",
+    title: "Why Should You Wear a Rudraksha? The Spiritual and Scientific Reasons",
+    excerpt: "Wearing a Rudraksha is believed to enhance spiritual growth, mental clarity, and physical well-being. But what does science say? Explore the reasons why...",
+    image: "/images/blogs/choose.webp",
+    slug: "why-wear-rudraksha"
+  },
+  {
+    id: "3",
+    title: "The Mysteries of Rudraksha: Unveiling Ancient Legends",
+    excerpt: "Rudraksha beads are steeped in myths and ancient legends. From Lord Shiva’s tears to their mystical healing powers, dive deep into the fascinating mysteries...",
+    image: "/images/blogs/whatev.webp",
+    slug: "mysteries-of-rudraksha"
+  },
+  {
+    id: "4",
+    title: "Amazing Benefits of Rudraksha: Health, Wealth, and Spirituality",
+    excerpt: "Rudraksha beads are known to bring balance, reduce stress, and promote spiritual growth. Learn about the profound benefits of wearing Rudraksha in daily life...",
+    image: "/images/blogs/benefits.webp",
+    slug: "benefits-of-rudraksha"
+  },
+];
+

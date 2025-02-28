@@ -10,6 +10,7 @@ import RudrakshaShowCase from "@/components/RudraShowCase";
 import TestimonialsSection from "@/components/Testimonials";
 import WhyWearRudraksha from "@/components/VideoSection";
 
+
 export default function Home() {
   
   return (

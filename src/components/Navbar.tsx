@@ -59,7 +59,7 @@ const Navbar = () => {
       <nav
         className={`w-full fixed top-0 left-0 z-50 bg-white ${
           isScrollingDown ? "-translate-y-full" : "translate-y-0"
-        } transition-transform duration-300`}
+        }`}
         style={{ height: "60px" }} // Adjust based on your design
       >
         <div className="flex-between h-full shadow-lg md:shadow-none">

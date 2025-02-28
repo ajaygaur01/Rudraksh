@@ -46,3 +46,14 @@ declare interface ProductShow    {
     image: string,
     description ?: string
 }
+
+declare interface Testimonial {
+    id: number;
+    name: string;
+    location: string;
+    rating: number;
+    timeAgo: string;
+    comment: string;
+    avatarColor: string;
+    avatarInitial: string;
+}

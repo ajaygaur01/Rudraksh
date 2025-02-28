@@ -181,3 +181,57 @@ export const rudrakshaItems: ProductShow[] = [
   },
   // You can add Mukhi 11 to 21 similarly with their descriptions.
 ];
+
+export const testimonials: Testimonial[] = [
+  {
+    id: 1,
+    name: "Anant P.",
+    location: "San Jose, CA",
+    rating: 5,
+    timeAgo: "9 hours ago",
+    comment: "Highly recommended! Exceptional Quality",
+    avatarColor: "bg-purple-200",
+    avatarInitial: "A",
+  },
+  {
+    id: 2,
+    name: "Yohan S.",
+    location: "Unknown",
+    rating: 5,
+    timeAgo: "8 days ago",
+    comment: "It was a great experience, very good customer service, and smooth delivery",
+    avatarColor: "bg-teal-500",
+    avatarInitial: "Y",
+  },
+  {
+    id: 3,
+    name: "Vyshnavl B.",
+    location: "Unknown",
+    rating: 5,
+    timeAgo: "2 days ago",
+    comment:
+      "Very much impressed with the packaging...authentic Rudrakshas...really happy with the order. Har har mahadev Om namah parvathi pathaye har har mahadev🙏",
+    avatarColor: "bg-purple-500",
+    avatarInitial: "V",
+  },
+  {
+    id: 4,
+    name: "Rahul M.",
+    location: "Mumbai, India",
+    rating: 5,
+    timeAgo: "1 week ago",
+    comment: "The Rudraksha beads are of excellent quality. I can feel the positive energy. Thank you!",
+    avatarColor: "bg-amber-500",
+    avatarInitial: "R",
+  },
+  {
+    id: 5,
+    name: "Priya K.",
+    location: "Delhi, India",
+    rating: 5,
+    timeAgo: "3 days ago",
+    comment: "Fast shipping and beautiful packaging. The Rudraksha has brought peace to my life.",
+    avatarColor: "bg-emerald-500",
+    avatarInitial: "P",
+  },
+]

@@ -66,9 +66,6 @@ model UserDetails {
   cart      Cart?
   orders    Order[]
   user      User      @relation("UserToUserDetails", fields: [userId], references: [id])
-  lastLogin DateTime?
-  resetToken     String?   // Token for password reset
-  resetTokenExpiry DateTime? // Expiry time for the reset token
 }
 
 model Address {

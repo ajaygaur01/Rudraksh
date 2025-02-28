@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowLeft, ChevronRight, } from "lucide-react"
+import { ArrowLeft, ChevronRight } from "lucide-react"
 import gsap from "gsap"
 
 type DrawerProps = {

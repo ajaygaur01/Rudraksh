@@ -1,4 +1,5 @@
 
+import BlogCarousel from "@/components/Blog";
 import Caraousel from "@/components/Caraousel";
 import FAQ from "@/components/Faq";
 import Footer from "@/components/Footer";
@@ -17,6 +18,7 @@ export default function Home() {
       <RudrakshaCollection/>
       <RudrakshaShowCase/>
       <WhyWearRudraksha/>
+      <BlogCarousel/>
       <TestimonialsSection/>
       <FAQ/>
       <Footer/>

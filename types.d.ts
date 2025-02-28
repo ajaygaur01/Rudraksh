@@ -57,3 +57,11 @@ declare interface Testimonial {
     avatarColor: string;
     avatarInitial: string;
 }
+
+declare interface BlogPost {
+    id: string
+    title: string
+    excerpt: string
+    image: string
+    slug: string
+}

@@ -235,3 +235,42 @@ export const testimonials: Testimonial[] = [
     avatarInitial: "P",
   },
 ]
+
+export const blogPosts: BlogPost[] = [
+  {
+    id: "5",
+    title: "How to Choose the Right Rudraksha for Yourself?",
+    excerpt: "Choosing the right Rudraksha depends on your needs and spiritual goals. Learn how to select the best Rudraksha bead based on your zodiac sign and energy requirements...",
+    image: "/images/blogs/best.webp",
+    slug: "choose-right-rudraksha"
+  },
+  {
+    id: "1",
+    title: "Different Types of Rudraksha and Their Significance",
+    excerpt: "Rudraksha beads come in various types, each with unique benefits and spiritual significance. From one Mukhi to twenty-one Mukhi, discover the hidden power...",
+    image: "/images/blogs/types.webp",
+    slug: "different-types-of-rudraksha"
+  },
+  {
+    id: "2",
+    title: "Why Should You Wear a Rudraksha? The Spiritual and Scientific Reasons",
+    excerpt: "Wearing a Rudraksha is believed to enhance spiritual growth, mental clarity, and physical well-being. But what does science say? Explore the reasons why...",
+    image: "/images/blogs/choose.webp",
+    slug: "why-wear-rudraksha"
+  },
+  {
+    id: "3",
+    title: "The Mysteries of Rudraksha: Unveiling Ancient Legends",
+    excerpt: "Rudraksha beads are steeped in myths and ancient legends. From Lord Shiva’s tears to their mystical healing powers, dive deep into the fascinating mysteries...",
+    image: "/images/blogs/whatev.webp",
+    slug: "mysteries-of-rudraksha"
+  },
+  {
+    id: "4",
+    title: "Amazing Benefits of Rudraksha: Health, Wealth, and Spirituality",
+    excerpt: "Rudraksha beads are known to bring balance, reduce stress, and promote spiritual growth. Learn about the profound benefits of wearing Rudraksha in daily life...",
+    image: "/images/blogs/benefits.webp",
+    slug: "benefits-of-rudraksha"
+  },
+];
+

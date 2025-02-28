@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowLeft, ChevronRight, User } from "lucide-react"
+import { ArrowLeft, ChevronRight, } from "lucide-react"
 import gsap from "gsap"
 
 type DrawerProps = {
@@ -15,53 +15,34 @@ type DrawerProps = {
 const categories = [
   {
     title: "Rudraksha",
-    icon: "/placeholder.svg?height=48&width=48",
-    url: "/category/rudraksha",
+    icon: "/images/Collections/Rudraksha/categoriesRudraksha.jpg",
+    url: "/images/Collections/Rudraksha/categoriesRudraksha.jpg",
   },
   {
     title: "Temple & Consecrated",
-    icon: "/placeholder.svg?height=48&width=48",
+    icon: "/images/Collections/Rudraksha/temples.jpg",
     url: "/category/temple",
   },
   {
     title: "Yoga Store",
-    icon: "/placeholder.svg?height=48&width=48",
+    icon: "/images/Collections/Rudraksha/yoga.jpg",
     url: "/category/yoga",
   },
   {
-    title: "Natural Food",
-    icon: "/placeholder.svg?height=48&width=48",
+    title: "Mala",
+    icon: "/images/Collections/Rudraksha/mala.jpg",
     url: "/category/food",
   },
   {
-    title: "Health & Immunity",
-    icon: "/placeholder.svg?height=48&width=48",
-    url: "/category/health",
+    title: "Bracelets",
+    icon: "/images/Collections/Rudraksha/bracelets.jpg",
+    url: "/category/food",
   },
-  {
-    title: "Clothing",
-    icon: "/placeholder.svg?height=48&width=48",
-    url: "/category/clothing",
-  },
-  {
-    title: "Body Care",
-    icon: "/placeholder.svg?height=48&width=48",
-    url: "/category/bodycare",
-  },
-  {
-    title: "Home Decor",
-    icon: "/placeholder.svg?height=48&width=48",
-    url: "/category/homedecor",
-  },
-  {
-    title: "Books",
-    icon: "/placeholder.svg?height=48&width=48",
-    url: "/category/books",
-  },
+
 ]
 
 const utilityLinks = [
-  { title: "Track Order", url: "/track-order" },
+  // { title: "Track Order", url: "/track-order" },
   { title: "Customer Support", url: "/support" },
   { title: "Blog", url: "/blog" },
 ]
@@ -142,7 +123,8 @@ const Drawer = ({ isOpen, onClose }: DrawerProps) => {
                     alt={category.title}
                     width={48}
                     height={48}
-                    className="object-contain"
+                    className="w-12 h-12 object-cover rounded-md"
+
                   />
                 </div>
                 <span className="font-medium">{category.title}</span>

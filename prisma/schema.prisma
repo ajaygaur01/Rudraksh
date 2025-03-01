@@ -66,6 +66,8 @@ model UserDetails {
   cart      Cart?
   orders    Order[]
   user      User      @relation("UserToUserDetails", fields: [userId], references: [id])
+  resetToken       String?  
+  resetTokenExpiry DateTime?
 }
 
 model Address {

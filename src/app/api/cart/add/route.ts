@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
     // Find UserDetails associated with the User
     const userDetails = await prisma.userDetails.findUnique({
-      where: { userId }, // Ensure this matches the schema
+      where: { userId },
     });
 
     if (!userDetails) {
@@ -38,31 +38,54 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
-    // Start a transaction to ensure atomicity
+    // Ensure stock is available before adding
+    if (product.stock < quantity) {
+      return NextResponse.json(
+        { error: 'Insufficient stock available' },
+        { status: 400 }
+      );
+    }
+
+    // Start a transaction
     const result = await prisma.$transaction(async (tx) => {
       // Check if user already has a cart
       let cart = await tx.cart.findUnique({
-        where: { userId: userDetails.id }, // Corrected userId reference
+        where: { userId: userDetails.id },
       });
 
       // If no cart exists, create one
       if (!cart) {
         cart = await tx.cart.create({
-          data: { userId: userDetails.id }, // Use the correct ID
+          data: { userId: userDetails.id },
         });
       }
 
-      // Add item to cart (upsert to avoid duplicates)
-      const cartItem = await tx.cartItem.upsert({
+      // Check existing cart item
+      const existingCartItem = await tx.cartItem.findUnique({
         where: {
           cartId_productId: {
             cartId: cart.id,
             productId,
           },
         },
-        update: {
-          quantity: { increment: quantity },
+      });
+
+      const newQuantity = existingCartItem ? existingCartItem.quantity + quantity : quantity;
+
+      // Prevent over-adding beyond available stock
+      if (newQuantity > product.stock) {
+        throw new Error('Cannot add more than available stock');
+      }
+
+      // Add or update item in cart
+      await tx.cartItem.upsert({
+        where: {
+          cartId_productId: {
+            cartId: cart.id,
+            productId,
+          },
         },
+        update: { quantity: { increment: quantity } },
         create: {
           cart: { connect: { id: cart.id } },
           product: { connect: { id: productId } },
@@ -70,7 +93,11 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      return cartItem;
+      // Return the full cart with items
+      return await tx.cart.findUnique({
+        where: { id: cart.id },
+        include: { items: true },
+      });
     });
 
     return NextResponse.json(result, { status: 200 });

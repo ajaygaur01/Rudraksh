@@ -3,69 +3,47 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function GET(req: NextRequest, context: { params: { userId: string } }) {
+export async function GET(
+  req: NextRequest, 
+  { params }: { params: { userId?: string } } // Use destructuring properly
+) {
   try {
-    const { userId } = context.params;
-
-    console.log("Incoming Request for userId:", userId); // Debugging
-
-    if (!userId) {
-      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    if (!params?.userId) {  // Ensure userId exists
+      return NextResponse.json({ error: "User ID is required" }, { status: 400 });
     }
 
-    // Find User
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-    });
+    const userId = params.userId.trim(); // Ensure there are no extra spaces or newline characters
 
-    console.log("User Found:", user); // Debugging
+    console.log("Incoming Request for userId:", userId);
 
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found', details: `No User found for userId: ${userId}` },
-        { status: 404 }
-      );
-    }
-
-    // Find UserDetails
+    // Find UserDetails (Cart is linked to UserDetails, not User)
     const userDetails = await prisma.userDetails.findUnique({
       where: { userId },
     });
 
-    console.log("UserDetails Found:", userDetails); // Debugging
-
     if (!userDetails) {
       return NextResponse.json(
-        { error: 'User details not found', details: `No UserDetails found for userId: ${userId}` },
+        { error: "User details not found", details: `No UserDetails found for userId: ${userId}` },
         { status: 404 }
       );
     }
 
-    // Fetch cart associated with UserDetails
+    // Fetch Cart
     const cart = await prisma.cart.findUnique({
-      where: { userId: userDetails.userId },
-      include: {
-        items: {
-          include: { product: true },
-        },
+      where: { userId: userDetails.id }, // Correct reference
+      include: { 
+        items: { include: { product: true } } // Fetch product details
       },
     });
 
-    console.log("Cart Found:", cart); // Debugging
-
-    if (!cart) {
-      return NextResponse.json(
-        { error: 'Cart not found', details: `No Cart found for userId: ${userId}` },
-        { status: 404 }
-      );
+    if (!cart || cart.items.length === 0) {
+      return NextResponse.json({ message: "Cart is empty", items: [] }, { status: 200 });
     }
 
-    return NextResponse.json({ items: cart.items || [] }, { status: 200 });
+    return NextResponse.json({ cart }, { status: 200 });
+
   } catch (error) {
-    console.error('Error fetching cart:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch cart', details: String(error) },
-      { status: 500 }
-    );
+    console.error("Error fetching cart:", error);
+    return NextResponse.json({ error: "Failed to fetch cart", details: String(error) }, { status: 500 });
   }
 }

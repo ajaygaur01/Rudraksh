@@ -98,7 +98,7 @@ model ProductDetails {
 model Cart {
   id     String      @id @default(uuid())
   userId String      @unique
-  user   UserDetails @relation(fields: [userId], references: [id])
+  user   UserDetails @relation(fields: [userId], references: [id]) 
   items  CartItem[]
 }
 

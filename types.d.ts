@@ -38,6 +38,20 @@ declare interface CollectionItems {
     badge ?: string;
 }
 
+interface Product {
+    id: string
+    name: string
+    description: string
+    price: number
+    stock: number
+    createdAt: string
+    updatedAt: string
+    image: string[]
+    category: string[]
+    rating: number
+    isConsecrated: boolean
+}
+
 declare interface ProductShow    {
     id: number,
     name: string,

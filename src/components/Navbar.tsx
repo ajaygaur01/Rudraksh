@@ -9,7 +9,7 @@ import SelectCurrency from "./SelectCurrency"
 import Drawer from "./Drawer"
 
 type IconWithUrl = {
-  Icon: any
+  Icon: React.ComponentType<{ size: number; strokeWidth: number; color: string }>
   url: string
 }
 
@@ -53,7 +53,7 @@ const Navbar = () => {
   return (
     <>
       {/* Drawer Component */}
-      <Drawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <Drawer isOpen={drawerOpen || false} onClose={() => setDrawerOpen(false)} />
 
       {/* Top Section (Hides on scroll down, reappears on scroll up) */}
       <nav
@@ -67,13 +67,15 @@ const Navbar = () => {
             <button onClick={toggleDrawer} className="hidden md:block focus:outline-none" aria-label="Toggle menu">
               <AlignJustify size={40} strokeWidth={1.2} color="#1f2937" />
             </button>
-            <Image
-              src="/images/logos/Logo.svg"
-              alt="Rishi Rudraksha"
-              width={140}
-              height={40}
-              className="h-10 w-auto px-10"
-            />
+            <Link href="/">
+              <Image
+                src="/images/logos/Logo.svg"
+                alt="Rishi Rudraksha"
+                width={140}
+                height={40}
+                className="h-10 w-auto px-10"
+              />
+            </Link>
           </div>
           <div className="hidden md:inline-flex px-8 py-3 flex-center gap-6">
             <Input searchVal={searchVal} setSearchVal={setSearchVal} className="mr-2" />

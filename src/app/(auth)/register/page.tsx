@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation'; 
-import { getProviders, signIn } from "next-auth/react";
+import { signIn } from "next-auth/react";
 // Define the validation schema using Zod
 const signupSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -71,6 +71,12 @@ const Signup = () => {
           router.push("/")
         } catch (error) {
           console.log(error)
+          if (axios.isAxiosError(error) && error.response) {
+            alert(error.response.data.error);
+          } else {
+            console.error(error);
+            alert("An unexpected error occurred.");
+          }
         }
       } catch (error) {
         console.error('Signup failed:', error);

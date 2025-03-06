@@ -54,20 +54,20 @@ model User {
 }
 
 model UserDetails {
-  id        String    @id @default(uuid())
-  name      String
-  email     String?   @unique
-  password  String?
-  role      Boolean
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  userId    String    @unique
-  addresses Address[]
-  cart      Cart?
-  orders    Order[]
-  user      User      @relation("UserToUserDetails", fields: [userId], references: [id])
-  resetToken       String?  
+  id               String    @id @default(uuid())
+  name             String
+  email            String?   @unique
+  password         String?
+  role             Boolean
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  userId           String    @unique
+  resetToken       String?
   resetTokenExpiry DateTime?
+  addresses        Address[]
+  cart             Cart?
+  orders           Order[]
+  user             User      @relation("UserToUserDetails", fields: [userId], references: [id])
 }
 
 model Address {
@@ -107,13 +107,11 @@ model CartItem {
   cartId    String
   productId String
   quantity  Int
-
   cart      Cart           @relation(fields: [cartId], references: [id])
   product   ProductDetails @relation(fields: [productId], references: [id])
 
-  @@unique([cartId, productId])  
+  @@unique([cartId, productId])
 }
-
 
 model Order {
   id        String      @id @default(uuid())

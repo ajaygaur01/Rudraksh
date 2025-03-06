@@ -22,12 +22,12 @@ export async function POST(req: Request) {
     // Generate a reset token
     const resetToken = crypto.randomBytes(32).toString("hex");
     const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour expiry
-
+    console.log('Reached here');
     await prisma.userDetails.update({
       where: { email },
       data: { resetToken, resetTokenExpiry },
     });
-
+    console.log('Reached here too');
     // Send email with reset link
     const resetUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password?token=${resetToken}`;
     await sendResetEmail(email, resetUrl);

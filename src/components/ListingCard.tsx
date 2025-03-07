@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import Image from "next/image"
-import { Heart } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import type React from "react";
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type ProductCardProps = {
-  product: Product
-  gridView: boolean
-}
+  product: Product;
+  gridView: boolean;
+};
 
 export default function ProductCard({ product, gridView }: ProductCardProps) {
-  const [isWishlisted, setIsWishlisted] = useState(false)
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   const toggleWishlist = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsWishlisted(!isWishlisted)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    setIsWishlisted(!isWishlisted);
+  };
 
   const renderRatingStars = (rating: number) => {
     return (
@@ -31,8 +31,8 @@ export default function ProductCard({ product, gridView }: ProductCardProps) {
               star <= Math.floor(rating)
                 ? "text-yellow-400"
                 : star - 0.5 <= rating
-                  ? "text-yellow-400"
-                  : "text-gray-300"
+                ? "text-yellow-400"
+                : "text-gray-300"
             }`}
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -42,40 +42,14 @@ export default function ProductCard({ product, gridView }: ProductCardProps) {
           </svg>
         ))}
       </div>
-    )
-  }
+    );
+  };
 
-  if (gridView) {
-    return (
-      <div className="relative group border rounded-md overflow-hidden bg-white">
-        <div className="relative aspect-square">
-          <Image src={product.image[0] || "/placeholder.svg"} alt={product.name} fill className="object-cover" />
-          <button
-            onClick={toggleWishlist}
-            className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-md z-10"
-          >
-            <Heart className={`w-5 h-5 ${isWishlisted ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
-          </button>
-          {product.isConsecrated && (
-            <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">Consecrated</div>
-          )}
-        </div>
-        <div className="p-4">
-          <h3 className="text-sm font-medium line-clamp-2 h-10">{product.name}</h3>
-          <div className="mt-1 mb-2">{renderRatingStars(product.rating)}</div>
-          <div className="flex items-center justify-between">
-            <p className="text-lg font-semibold">₹ {product.price.toLocaleString()}</p>
-          </div>
-          <Button className="w-full mt-3 bg-amber-500 hover:bg-amber-600">ADD TO CART</Button>
-        </div>
-      </div>
-    )
-  } else {
-    // List view
-    return (
-      <div className="relative group border rounded-md overflow-hidden bg-white">
-        <div className="flex">
-          <div className="relative w-40 h-40 flex-shrink-0">
+  return (
+    <Link href={`/product/${product.id}`} className="block">
+      {gridView ? (
+        <div className="relative group border rounded-md overflow-hidden bg-white">
+          <div className="relative aspect-square">
             <Image src={product.image[0] || "/placeholder.svg"} alt={product.name} fill className="object-cover" />
             <button
               onClick={toggleWishlist}
@@ -84,23 +58,47 @@ export default function ProductCard({ product, gridView }: ProductCardProps) {
               <Heart className={`w-5 h-5 ${isWishlisted ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
             </button>
             {product.isConsecrated && (
-              <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">
-                Consecrated
-              </div>
+              <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">Consecrated</div>
             )}
           </div>
-          <div className="p-4 flex-1">
-            <h3 className="text-sm font-medium">{product.name}</h3>
-            <p className="text-sm text-gray-500 mt-1 line-clamp-2">{product.description}</p>
-            <div className="mt-2">{renderRatingStars(product.rating)}</div>
-            <div className="flex items-center justify-between mt-2">
+          <div className="p-4">
+            <h3 className="text-sm font-medium line-clamp-2 h-10">{product.name}</h3>
+            <div className="mt-1 mb-2">{renderRatingStars(product.rating)}</div>
+            <div className="flex items-center justify-between">
               <p className="text-lg font-semibold">₹ {product.price.toLocaleString()}</p>
-              <Button className="bg-amber-500 hover:bg-amber-600">ADD TO CART</Button>
+            </div>
+            <Button className="w-full mt-3 bg-amber-500 hover:bg-amber-600">ADD TO CART</Button>
+          </div>
+        </div>
+      ) : (
+        <div className="relative group border rounded-md overflow-hidden bg-white">
+          <div className="flex">
+            <div className="relative w-40 h-40 flex-shrink-0">
+              <Image src={product.image[0] || "/placeholder.svg"} alt={product.name} fill className="object-cover" />
+              <button
+                onClick={toggleWishlist}
+                className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-md z-10"
+              >
+                <Heart className={`w-5 h-5 ${isWishlisted ? "fill-red-500 text-red-500" : "text-gray-400"}`} />
+              </button>
+              {product.isConsecrated && (
+                <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">
+                  Consecrated
+                </div>
+              )}
+            </div>
+            <div className="p-4 flex-1">
+              <h3 className="text-sm font-medium">{product.name}</h3>
+              <p className="text-sm text-gray-500 mt-1 line-clamp-2">{product.description}</p>
+              <div className="mt-2">{renderRatingStars(product.rating)}</div>
+              <div className="flex items-center justify-between mt-2">
+                <p className="text-lg font-semibold">₹ {product.price.toLocaleString()}</p>
+                <Button className="bg-amber-500 hover:bg-amber-600">ADD TO CART</Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    )
-  }
+      )}
+    </Link>
+  );
 }
-

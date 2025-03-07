@@ -1,22 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { verify } from 'jsonwebtoken'; // Use JWT to decode userId
 
 const prisma = new PrismaClient();
 
-export async function GET(
-  req: NextRequest, 
-  { params }: { params: { userId?: string } } // Use destructuring properly
-) {
+export async function GET(req: NextRequest) {
   try {
-    if (!params?.userId) {  // Ensure userId exists
-      return NextResponse.json({ error: "User ID is required" }, { status: 400 });
+    // Extract token from cookies
+    const token = req.cookies.get('authToken')?.value;
+
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized: No token found" }, { status: 401 });
     }
 
-    const userId = params.userId.trim(); // Ensure there are no extra spaces or newline characters
+    // Verify and decode the token (ensure JWT_SECRET is defined in .env)
+    let decoded;
+    try {
+      decoded = verify(token, process.env.JWT_SECRET!) as { userId: string };
+    } catch (error) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    }
+
+    const userId = decoded.userId; // Extracted userId
 
     console.log("Incoming Request for userId:", userId);
 
-    // Find UserDetails (Cart is linked to UserDetails, not User)
+    // Find UserDetails (Cart is linked to UserDetails)
     const userDetails = await prisma.userDetails.findUnique({
       where: { userId },
     });

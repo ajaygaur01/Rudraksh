@@ -1,18 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { verify } from 'jsonwebtoken'; // If using JWT authentication
 
 const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {
+    // Extract userId from cookie (assuming JWT is used)
+    const token = req.cookies.get('authToken')?.value;
+
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized: No token found' }, { status: 401 });
+    }
+
+    // Verify and decode the token (use your secret key)
+    let decoded;
+    try {
+      decoded = verify(token, process.env.JWT_SECRET!) as { userId: string };
+    } catch (error) {
+      return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    }
+
+    const userId = decoded.userId; // Extracted userId
+
     // Parse JSON request body
     const body = await req.json();
-    const { productId, userId, quantity } = body;
+    const { productId, quantity } = body;
 
-    // Validate input
-    if (!userId || !productId || quantity == null || quantity <= 0) {
+    if (!productId || quantity == null || quantity <= 0) {
       return NextResponse.json(
-        { error: 'Invalid input: userId, productId, and quantity are required' },
+        { error: 'Invalid input: productId and quantity are required' },
         { status: 400 }
       );
     }
@@ -53,14 +70,12 @@ export async function POST(req: NextRequest) {
         where: { userId: userDetails.id },
       });
 
-      // If no cart exists, create one
       if (!cart) {
         cart = await tx.cart.create({
           data: { userId: userDetails.id },
         });
       }
 
-      // Check existing cart item
       const existingCartItem = await tx.cartItem.findUnique({
         where: {
           cartId_productId: {
@@ -72,12 +87,10 @@ export async function POST(req: NextRequest) {
 
       const newQuantity = existingCartItem ? existingCartItem.quantity + quantity : quantity;
 
-      // Prevent over-adding beyond available stock
       if (newQuantity > product.stock) {
         throw new Error('Cannot add more than available stock');
       }
 
-      // Add or update item in cart
       await tx.cartItem.upsert({
         where: {
           cartId_productId: {
@@ -93,7 +106,6 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // Return the full cart with items
       return await tx.cart.findUnique({
         where: { id: cart.id },
         include: { items: true },

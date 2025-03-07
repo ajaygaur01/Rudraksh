@@ -5,14 +5,20 @@ const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {
+    // Extract userId from request headers (set by middleware)
+    const userId = req.headers.get("x-user-id");
+
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized: User ID missing" }, { status: 401 });
+    }
+
     // Parse JSON request body
     const body = await req.json();
-    const { productId, userId, quantity } = body;
+    const { productId, quantity } = body;
 
-    // Validate input
-    if (!userId || !productId || quantity == null || quantity <= 0) {
+    if (!productId || quantity == null || quantity <= 0) {
       return NextResponse.json(
-        { error: 'Invalid input: userId, productId, and quantity are required' },
+        { error: "Invalid input: productId and quantity are required" },
         { status: 400 }
       );
     }
@@ -24,7 +30,7 @@ export async function POST(req: NextRequest) {
 
     if (!userDetails) {
       return NextResponse.json(
-        { error: 'User details not found', details: `No UserDetails found for userId: ${userId}` },
+        { error: "User details not found", details: `No UserDetails found for userId: ${userId}` },
         { status: 404 }
       );
     }
@@ -35,13 +41,13 @@ export async function POST(req: NextRequest) {
     });
 
     if (!product) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
     // Ensure stock is available before adding
     if (product.stock < quantity) {
       return NextResponse.json(
-        { error: 'Insufficient stock available' },
+        { error: "Insufficient stock available" },
         { status: 400 }
       );
     }
@@ -53,14 +59,12 @@ export async function POST(req: NextRequest) {
         where: { userId: userDetails.id },
       });
 
-      // If no cart exists, create one
       if (!cart) {
         cart = await tx.cart.create({
           data: { userId: userDetails.id },
         });
       }
 
-      // Check existing cart item
       const existingCartItem = await tx.cartItem.findUnique({
         where: {
           cartId_productId: {
@@ -72,12 +76,10 @@ export async function POST(req: NextRequest) {
 
       const newQuantity = existingCartItem ? existingCartItem.quantity + quantity : quantity;
 
-      // Prevent over-adding beyond available stock
       if (newQuantity > product.stock) {
-        throw new Error('Cannot add more than available stock');
+        throw new Error("Cannot add more than available stock");
       }
 
-      // Add or update item in cart
       await tx.cartItem.upsert({
         where: {
           cartId_productId: {
@@ -93,7 +95,6 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // Return the full cart with items
       return await tx.cart.findUnique({
         where: { id: cart.id },
         include: { items: true },
@@ -102,12 +103,12 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
-    console.error('Cart add error:', error);
+    console.error("Cart add error:", error);
 
     return NextResponse.json(
       {
-        error: 'Failed to process cart request',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        error: "Failed to process cart request",
+        message: error instanceof Error ? error.message : "Unknown error",
         details: String(error),
       },
       { status: 500 }

@@ -3,20 +3,18 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function GET(
-  req: NextRequest, 
-  { params }: { params: { userId?: string } } // Use destructuring properly
-) {
+export async function GET(req: NextRequest) {
   try {
-    if (!params?.userId) {  // Ensure userId exists
-      return NextResponse.json({ error: "User ID is required" }, { status: 400 });
-    }
+    // Extract userId from request headers (set by middleware)
+    const userId = req.headers.get("x-user-id");
 
-    const userId = params.userId.trim(); // Ensure there are no extra spaces or newline characters
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized: User ID missing" }, { status: 401 });
+    }
 
     console.log("Incoming Request for userId:", userId);
 
-    // Find UserDetails (Cart is linked to UserDetails, not User)
+    // Find UserDetails (Cart is linked to UserDetails)
     const userDetails = await prisma.userDetails.findUnique({
       where: { userId },
     });

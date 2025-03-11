@@ -7,6 +7,8 @@ import { Star, X, ChevronLeft, ChevronRight, Minus, Plus, Truck, Clock, Shield, 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { handleAddToCart } from "@/utils/api";
+import Cookie from "js-cookie";
 
 interface Product {
   id: string;
@@ -63,9 +65,9 @@ const ProductDetailPage: React.FC = () => {
     alert(`Checking delivery availability for pin code: ${pinCode}`);
   };
 
-  const handleAddToCart = () => {
-    // This would typically add the product to the cart
-    alert(`Added ${quantity} ${product?.name} to cart`);
+  const handleAdd = () => {
+    if(!product) return;
+    handleAddToCart(product?.id, quantity);
   };
 
   const handleAddToWishlist = () => {
@@ -103,7 +105,7 @@ const ProductDetailPage: React.FC = () => {
   if (loading) return <div className="text-center mt-10 text-gray-500">Loading...</div>;
   if (error) return <div className="text-center mt-10 text-red-500">{error}</div>;
   if (!product) return <div className="text-center mt-10 text-gray-500">Product not found</div>;
-
+  console.log("---cookie---",Cookie.get('auth_token'));
   return (
     <>
       <main className="w-full px-4 md:px-8 py-20 bg-white">
@@ -165,7 +167,7 @@ const ProductDetailPage: React.FC = () => {
                   ))}
                 </div>
                 <span className="text-sm text-gray-600">
-                  {product?.rating?.toFixed(1)} Reviews
+                  {product?.rating?.toFixed(1)} Reviews {}
                 </span>
                 <button className="text-sm text-primary underline">
                   Write a Review
@@ -205,7 +207,7 @@ const ProductDetailPage: React.FC = () => {
               <div className="flex flex-wrap gap-4">
                 <Button 
                   className="bg-red-600 hover:bg-red-700 text-white px-8 py-2"
-                  onClick={handleAddToCart}
+                  onClick={handleAdd}
                 >
                   Add to Cart
                 </Button>

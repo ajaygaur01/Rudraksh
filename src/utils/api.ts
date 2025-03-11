@@ -23,7 +23,7 @@ export async function addToCart(productId: string, quantity: number) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-user-id': "804c6412-358e-4f5f-b1b5-9cacb77c6bee", // Replace with actual user ID from auth state
+          'x-user-id': "cm84nn02h0000mzco3iudlgjx", // Replace with actual user ID from auth state
         },
         body: JSON.stringify({ productId, quantity }),
       });
@@ -53,4 +53,38 @@ export const handleAddToCart = async (productId : string,quantity : number) => {
       console.log('Cart updated:', result);
     }
 };
+
+export const removeCartItem = async (userId: string, productId: string) => {
+  try {
+    const response = await fetch("/api/cart/remove", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, productId }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to remove item from cart");
+    }
+
+    return data.cart; // Updated cart after deletion
+  } catch (error) {
+    console.error("Error removing item from cart:", error);
+    throw error;
+  }
+};
+
+export const handleRemoveItem = async (userId: string, productId: string) => {
+  try {
+    const updatedCart = await removeCartItem(userId, productId);
+    console.log("Cart updated:", updatedCart);
+    // Optionally update state here if needed
+  } catch (error) {
+    console.error(error);
+  }
+};
+
   

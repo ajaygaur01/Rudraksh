@@ -5,28 +5,28 @@ const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {
-    // Extract userId from request headers (set by middleware)
+    // ✅ Extract userId from request headers (middleware sets this automatically)
     const userId = req.headers.get("x-user-id");
 
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized: User ID missing" }, { status: 401 });
     }
 
-    // Parse JSON request body
-    const body = await req.json();
-    const { productId, quantity } = body;
+    // ✅ Parse request body
+    const { productId, quantity } = await req.json();
 
     if (!productId || quantity == null || quantity <= 0) {
       return NextResponse.json(
-        { error: "Invalid input: productId and quantity are required" },
+        { error: "Invalid input: productId and quantity must be provided and greater than 0" },
         { status: 400 }
       );
     }
 
-    // Find UserDetails associated with the User
-    const userDetails = await prisma.userDetails.findUnique({
-      where: { userId },
-    });
+    // ✅ Fetch user details and product efficiently
+    const [userDetails, product] = await prisma.$transaction([
+      prisma.userDetails.findUnique({ where: { userId } }),
+      prisma.productDetails.findUnique({ where: { id: productId } }),
+    ]);
 
     if (!userDetails) {
       return NextResponse.json(
@@ -35,51 +35,41 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check if product exists
-    const product = await prisma.productDetails.findUnique({
-      where: { id: productId },
-    });
-
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    // Ensure stock is available before adding
     if (product.stock < quantity) {
       return NextResponse.json(
-        { error: "Insufficient stock available" },
+        { error: "Insufficient stock available", stock: product.stock },
         { status: 400 }
       );
     }
 
-    // Start a transaction
-    const result = await prisma.$transaction(async (tx) => {
-      // Check if user already has a cart
+    // ✅ Transaction for handling cart operations
+    const updatedCart = await prisma.$transaction(async (tx) => {
+      // Find or create cart
       let cart = await tx.cart.findUnique({
         where: { userId: userDetails.id },
+        include: { items: true },
       });
 
       if (!cart) {
         cart = await tx.cart.create({
           data: { userId: userDetails.id },
+          include: { items: true },
         });
       }
 
-      const existingCartItem = await tx.cartItem.findUnique({
-        where: {
-          cartId_productId: {
-            cartId: cart.id,
-            productId,
-          },
-        },
-      });
-
+      // Check if item already exists in cart
+      const existingCartItem = cart.items.find((item) => item.productId === productId);
       const newQuantity = existingCartItem ? existingCartItem.quantity + quantity : quantity;
 
       if (newQuantity > product.stock) {
         throw new Error("Cannot add more than available stock");
       }
 
+      // Add or update cart item
       await tx.cartItem.upsert({
         where: {
           cartId_productId: {
@@ -95,13 +85,13 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      return await tx.cart.findUnique({
+      return tx.cart.findUnique({
         where: { id: cart.id },
-        include: { items: true },
+        include: { items: { include: { product: true } } },
       });
     });
 
-    return NextResponse.json(result, { status: 200 });
+    return NextResponse.json({ message: "Item added to cart", cart: updatedCart }, { status: 200 });
   } catch (error) {
     console.error("Cart add error:", error);
 
@@ -109,9 +99,10 @@ export async function POST(req: NextRequest) {
       {
         error: "Failed to process cart request",
         message: error instanceof Error ? error.message : "Unknown error",
-        details: String(error),
       },
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect(); // ✅ Ensure Prisma connection is closed
   }
 }

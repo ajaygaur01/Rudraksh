@@ -3,7 +3,7 @@ import { Heart, ShoppingBag, User } from "lucide-react";
 
 export  const TopNavIcon : IconWithUrl[] = [
     {
-        url: '/',
+        url: '/cart',
         Icon: ShoppingBag
     },
     {

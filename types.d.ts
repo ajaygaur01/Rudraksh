@@ -79,3 +79,19 @@ declare interface BlogPost {
     image: string
     slug: string
 }
+
+interface CartResponse {
+    cart: {
+      id: string;
+      userId: string;
+      items: CartItem[];
+    };
+  }
+  
+  interface CartItem {
+    id: string;
+    cartId: string;
+    productId: string;
+    quantity: number;
+    product: Product;
+  }

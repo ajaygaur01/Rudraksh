@@ -5,14 +5,14 @@ const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {
-    // Extract userId from request headers (automatically set by middleware)
+    // ✅ Extract userId from request headers (middleware sets this automatically)
     const userId = req.headers.get("x-user-id");
 
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized: User ID missing" }, { status: 401 });
     }
 
-    // Parse request body
+    // ✅ Parse request body
     const { productId, quantity } = await req.json();
 
     if (!productId || quantity == null || quantity <= 0) {
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Fetch user details and product in a single transaction for efficiency
+    // ✅ Fetch user details and product efficiently
     const [userDetails, product] = await prisma.$transaction([
       prisma.userDetails.findUnique({ where: { userId } }),
       prisma.productDetails.findUnique({ where: { id: productId } }),
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Transaction for handling cart operations
+    // ✅ Transaction for handling cart operations
     const updatedCart = await prisma.$transaction(async (tx) => {
       // Find or create cart
       let cart = await tx.cart.findUnique({
@@ -63,7 +63,6 @@ export async function POST(req: NextRequest) {
 
       // Check if item already exists in cart
       const existingCartItem = cart.items.find((item) => item.productId === productId);
-
       const newQuantity = existingCartItem ? existingCartItem.quantity + quantity : quantity;
 
       if (newQuantity > product.stock) {
@@ -104,6 +103,6 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   } finally {
-    await prisma.$disconnect(); // Ensure Prisma connection is closed to prevent leaks
+    await prisma.$disconnect(); // ✅ Ensure Prisma connection is closed
   }
 }

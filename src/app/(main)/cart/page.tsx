@@ -17,7 +17,7 @@ const Cart = () => {
   const [updating, setUpdating] = useState<boolean>(false)
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({})
 
-  const userId = "cm84nn02h0000mzco3iudlgjx" // In a real app, get this from auth
+  //const userId = "cm84r621l0000n4z81e4ldm2s" // In a real app, get this from auth
 
   useEffect(() => {
     fetchCart()
@@ -36,12 +36,10 @@ const Cart = () => {
   const fetchCart = async () => {
     try {
       setLoading(true)
-      const res = await fetch(`http://localhost:3000/api/cart/${userId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          "x-user-id": userId,
-        },
-      })
+      const res = await fetch("/api/cart/get", {
+        method: "GET",
+        credentials: "include", // ✅ Ensures JWT Cookie is Sent
+      });
 
       if (!res.ok) {
         throw new Error("Failed to fetch cart")
@@ -118,7 +116,7 @@ const Cart = () => {
   }
 
   const removeItem = async (itemId: string) => {
-        remove("cm84nn02h0000mzco3iudlgjx",itemId)
+        remove("cm84r621l0000n4z81e4ldm2s",itemId)
   }
 
   const updateCart = async () => {

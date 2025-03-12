@@ -26,6 +26,7 @@
     "country-flag-icons": "^1.5.18",
     "formik": "^2.4.6",
     "gsap": "^3.12.7",
+    "jose": "^6.0.9",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",

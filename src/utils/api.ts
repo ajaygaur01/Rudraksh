@@ -23,9 +23,10 @@ export async function addToCart(productId: string, quantity: number) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-user-id': "cm84l3nqr0001n4bss8b8d7a3", // Replace with actual user ID from auth state
-          'x-user-id': "cm84nn02h0000mzco3iudlgjx", // Replace with actual user ID from auth state
+     //     'x-user-id': "cm84r621l0000n4z81e4ldm2s", // Replace with actual user ID from auth state
+           
         },
+        credentials: "include",
         body: JSON.stringify({ productId, quantity }),
       });
   

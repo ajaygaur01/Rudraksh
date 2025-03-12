@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify, JWTPayload } from "jose";
 
 export async function middleware(req: NextRequest) {
-  console.log("🚀 Middleware Running for:", req.url);
+  console.log("🚀 Middleware Running Cookie for:", req.url);
 
   // Extract token from cookies
-  const token = req.cookies.get("auth_token")?.value;
+  const token = req.headers.get("auth_token");
+  console.log('---token---',token)
   console.log("🔹 Received Token:", token ? "Token found" : "No token found");
 
   if (!token) {
@@ -26,7 +27,7 @@ export async function middleware(req: NextRequest) {
     console.log("✅ Full Decoded Payload:", payload);
 
     // Ensure correct user ID is extractedm
-    const userId = (payload.id as string) // Prefer userId over id
+    const userId = (payload.userId as string) // Prefer userId over id
     console.log("✅ Extracted User ID:", userId || "No userId found in token");
 
     if (!userId) {

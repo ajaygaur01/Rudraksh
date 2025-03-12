@@ -140,32 +140,32 @@ export default function BlogPost({id = "1"} : {id?: string}) {
 
           {/* Related Posts */}
           <div className="mt-12">
-  <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Articles</h2>
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {blogPosts
-      .filter((post) => post.id !== id) // Exclude the current blog post
-      .slice(0, 2) // Show only two related articles
-      .map((post) => (
-        <div key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="relative h-48">
-            <Image
-              src={post.image}
-              alt={post.title}
-              fill
-              className="object-cover"
-            />
-          </div>
-          <div className="p-4">
-            <h3 className="font-bold text-lg mb-2">{post.title}</h3>
-            <p className="text-gray-600 text-sm mb-3">{post.excerpt}</p>
-            <Link href={`/blog/${post.slug}`} className="text-orange-600 font-medium hover:text-orange-700">
-              Read More →
-            </Link>
-          </div>
-        </div>
-      ))}
-  </div>
-</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Articles</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {blogPosts
+                .filter((post) => post.id !== id) // Exclude the current blog post
+                .slice(0, 2) // Show only two related articles
+                .map((post) => (
+                    <div key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div className="relative h-48">
+                        <Image
+                        src={post.image}
+                        alt={post.title}
+                        fill
+                        className="object-cover"
+                        />
+                    </div>
+                    <div className="p-4">
+                        <h3 className="font-bold text-lg mb-2">{post.title}</h3>
+                        <p className="text-gray-600 text-sm mb-3">{post.excerpt}</p>
+                        <Link href={`/blog/${post.slug}`} className="text-orange-600 font-medium hover:text-orange-700">
+                        Read More →
+                        </Link>
+                    </div>
+                    </div>
+                ))}
+            </div>
+            </div>
 
           {/* Newsletter Signup */}
           <div className="mt-12 bg-gray-100 rounded-lg p-6">

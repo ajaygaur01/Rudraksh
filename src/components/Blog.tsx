@@ -37,25 +37,27 @@ export default function BlogCarousel() {
         {/* Blog posts grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {blogPosts.slice(startIndex, startIndex + visiblePosts).map((post) => (
-            <div key={post.id} className="flex flex-col">
-              <div className="relative h-64 mb-4 overflow-hidden rounded-lg">
-                <Image
-                  src={post.image || "/placeholder.svg"}
-                  alt={post.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                />
+            <Link key={post.id} href={`/blog/${post.id}`}>
+              <div key={post.id} className="flex flex-col">
+                <div className="relative h-64 mb-4 overflow-hidden rounded-lg">
+                  <Image
+                    src={post.image || "/placeholder.svg"}
+                    alt={post.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
+                <p className="text-gray-700 mb-4 flex-grow">{post.excerpt}</p>
+                <Link 
+                  href={`/blog/${post.id}`} 
+                  className="text-red-600 font-medium hover:underline"
+                >
+                  Read More
+                </Link>
               </div>
-              <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
-              <p className="text-gray-700 mb-4 flex-grow">{post.excerpt}</p>
-              <Link 
-                href={`/blog/${post.slug}`} 
-                className="text-red-600 font-medium hover:underline"
-              >
-                Read More
-              </Link>
-            </div>
+            </Link>
           ))}
         </div>
         

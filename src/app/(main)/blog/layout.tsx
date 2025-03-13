@@ -6,7 +6,9 @@ const BlogLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="w-full min-h-screen bg-[#f9f5ef]">
         <Navbar/>
-        {children}
+        <div className="min-h-[90svh]">
+          {children}
+        </div>
         <Footer/>
     </div>
   );

@@ -10,20 +10,6 @@ import { Separator } from "@/components/ui/separator";
 import { handleAddToCart } from "@/utils/api";
 import Cookie from "js-cookie";
 
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  createdAt: string;
-  updatedAt: string;
-  image: string[];
-  category: string[];
-  rating: number;
-  isConsecrated: boolean;
-}
-
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams(); // Get the product ID from the URL
   const [product, setProduct] = useState<Product | null>(null);

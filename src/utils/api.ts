@@ -16,36 +16,54 @@ function getUserIdFromToken(): string | null {
 }
 
 export async function addToCart(productId: string, quantity: number) {
-    const userId = getUserIdFromToken();
-    console.log("---userId---",userId);
+  const token = document.cookie
+    .split("; ")
+    .find(row => row.startsWith("auth_token="))
+    ?.split("=")[1];
+
+  console.log("---cookie---", token);
+
+  let userId = null;
+  if (token) {
     try {
-      const response = await fetch('/api/cart/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-     //     'x-user-id': "cm84r621l0000n4z81e4ldm2s", // Replace with actual user ID from auth state
-           
-        },
-        credentials: "include",
-        body: JSON.stringify({ productId, quantity }),
-      });
-  
-      const data = await response.json();
-  
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to add to cart');
-      }
-  
-      return data; // Returns updated cart details
+      const payload = JSON.parse(atob(token.split(".")[1])); // Decode JWT
+      userId = payload.id || payload.userId;
     } catch (error) {
-      console.error('Error adding to cart:', error);
-      if (error instanceof Error) {
-        return { error: error.message };
-      } else {
-        return { error: 'An unknown error occurred' };
-      }
+      console.error("Error decoding JWT:", error);
     }
   }
+
+  console.log("---userId---", userId);
+
+  if (!userId) {
+    console.error("No user ID found in token.");
+    return { error: "User not authenticated" };
+  }
+
+  try {
+    const response = await fetch('/api/cart/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        "Authorization": `Bearer ${token}`
+      },
+      credentials: "include",
+      body: JSON.stringify({ userId, productId, quantity }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to add to cart');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    return { error: error.message || 'Unknown error' };
+  }
+}
+
  
 export const handleAddToCart = async (productId : string,quantity : number) => {
     const result = await addToCart(productId, quantity);

@@ -1,52 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jwtVerify, JWTPayload } from "jose";
+import { jwtVerify } from "jose";
 
 export async function middleware(req: NextRequest) {
   console.log("🚀 Middleware Running Cookie for:", req.url);
 
   // Extract token from cookies
-  const token = req.headers.get("auth_token");
-  console.log('---token---',token)
-  console.log("🔹 Received Token:", token ? "Token found" : "No token found");
+  const token = req.cookies.get("auth_token")?.value;
+  
+  // You're using "eyJhbG..." token from a cookie named "auth_token"
+  // But in your error you're showing a JWT being passed as "cookie"
 
   if (!token) {
-    console.error("❌ No Token Found - Returning 401");
-    return NextResponse.json({ error: "Unauthorized: No token found" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized: Token missing" }, { status: 401 });
   }
-
+  
   try {
-    if (!process.env.JWT_SECRET) {
-      throw new Error("❌ JWT_SECRET is missing");
-    }
-
-    console.log("🔑 Verifying JWT with jose...");
-    const secretKey = new TextEncoder().encode(process.env.JWT_SECRET);
-
-    // Verify JWT and extract payload
-    const { payload } = await jwtVerify(token, secretKey) as { payload: JWTPayload };
+    // Verify the JWT using jose
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    const { payload } = await jwtVerify(token, secret);
+    
     console.log("✅ Full Decoded Payload:", payload);
-
-    // Ensure correct user ID is extractedm
-    const userId = (payload.userId as string) // Prefer userId over id
-    console.log("✅ Extracted User ID:", userId || "No userId found in token");
-
+    
+    // Your token contains "id", not "userId" based on the cookie you shared
+    const userId = payload.id as string;
+    
     if (!userId) {
-      console.error("❌ Token does not contain a valid userId");
+      console.error("❌ Token does not contain a valid id");
       return NextResponse.json({ error: "Unauthorized: Invalid token" }, { status: 401 });
     }
-
-    // Clone request headers and attach userId
+    
+    console.log("✅ Extracted User ID:", userId);
+    
+    // Set the user ID in the headers that will be passed to API routes
     const requestHeaders = new Headers(req.headers);
-    requestHeaders.set("X-User-Id", userId);
-
-    // Forward request with updated headers
+    requestHeaders.set("x-user-id", userId);
+    
     return NextResponse.next({ request: { headers: requestHeaders } });
   } catch (error) {
-    console.error("❌ Token Verification Error:", error);
-    return NextResponse.json({ error: "Unauthorized: Invalid token" }, { status: 401 });
+    console.error("❌ Invalid Token:", error);
+    return NextResponse.json({ error: "Invalid or expired token" }, { status: 401 });
   }
 }
 
 export const config = {
-  matcher: "/api/cart/:path*", // ✅ Applies only to cart 
+  matcher: "/api/cart/:path*",
 };

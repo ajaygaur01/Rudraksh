@@ -74,7 +74,7 @@ export const handleAddToCart = async (productId : string,quantity : number) => {
     }
 };
 
-export const removeCartItem = async (userId: string, productId: string) => {
+export const removeCartItem = async (productId: string) => {
   try {
     // Retrieve token from cookies
     const token = document.cookie
@@ -92,7 +92,7 @@ export const removeCartItem = async (userId: string, productId: string) => {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`, // ✅ Send JWT token for authentication
       },
-      body: JSON.stringify({ userId, productId }),
+      body: JSON.stringify({productId }),
     });
 
     const data = await response.json();
@@ -109,9 +109,9 @@ export const removeCartItem = async (userId: string, productId: string) => {
 };
 
 
-export const handleRemoveItem = async (userId: string, productId: string) => {
+export const handleRemoveItem = async (productId: string) => {
   try {
-    const updatedCart = await removeCartItem(userId, productId);
+    const updatedCart = await removeCartItem( productId);
     console.log("Cart updated:", updatedCart);
     // Optionally update state here if needed
   } catch (error) {

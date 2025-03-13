@@ -54,9 +54,9 @@ export async function POST(req: Request) {
     response.cookies.set({
       name: "auth_token",
       value: token,
-      httpOnly: true, // Prevents access from JavaScript (XSS protection)
-      secure: process.env.NODE_ENV === "production", // Secure in production
-      sameSite: "strict", // Prevent CSRF attacks
+     // httpOnly: true, // Prevents access from JavaScript (XSS protection)
+      secure: false, // Secure in production
+      sameSite: "lax", // Prevent CSRF attacks
       path: "/",
       maxAge: 3600, // 1 hour expiration
     });

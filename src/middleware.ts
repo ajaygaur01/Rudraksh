@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
 export async function middleware(req: NextRequest) {
-  console.log(`🚀 Middleware Running for: ${req.nextUrl.pathname}`);
+  console.log("🚀 Middleware Running Cookie for:", req.url);
 
-  // Extract Authorization header
-  const token = req.headers.get("auth_token")?.split(" ")[1];
-  console.log("🔹 Received Token:", token ? "Token found" : "No token");
+  // Extract token from cookies
+  const token = req.headers.get("auth_token");
+  console.log('---token---',token)
+  console.log("🔹 Received Token:", token ? "Token found" : "No token found");
 
   if (!token) {
     return NextResponse.json({ error: "Unauthorized: Token missing" }, { status: 401 });
@@ -19,9 +20,13 @@ console.log("---token---" , token)
 console.log('token' , token)
     console.log("✅ Full Decoded Payload:", payload);
 
-    if (!payload.id) {
-      console.error("❌ No ID found in payload");
-      return NextResponse.json({ error: "Invalid token structure" }, { status: 401 });
+    // Ensure correct user ID is extractedm
+    const userId = (payload.userId as string) // Prefer userId over id
+    console.log("✅ Extracted User ID:", userId || "No userId found in token");
+
+    if (!userId) {
+      console.error("❌ Token does not contain a valid userId");
+      return NextResponse.json({ error: "Unauthorized: Invalid token" }, { status: 401 });
     }
 
     console.log("✅ Extracted User ID:", payload.id);

@@ -37,7 +37,7 @@ export default function BlogCarousel() {
         {/* Blog posts grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {blogPosts.slice(startIndex, startIndex + visiblePosts).map((post) => (
-            <Link key={post.id} href={`/blog/${post.id}`}>
+            // <Link key={post.id} href={`/blog/${post.id}`}>
               <div key={post.id} className="flex flex-col">
                 <div className="relative h-64 mb-4 overflow-hidden rounded-lg">
                   <Image
@@ -57,7 +57,7 @@ export default function BlogCarousel() {
                   Read More
                 </Link>
               </div>
-            </Link>
+            // </Link>
           ))}
         </div>
         

@@ -245,7 +245,7 @@ const Cart = () => {
                 </button>
               </div>
             </div>
-
+                      
             <div className="md:col-span-2 flex items-center md:justify-center">
               <span className="text-sm font-medium md:hidden mr-2">Price:</span>
               <span className="font-medium">₹ {item.product.price.toLocaleString()}</span>

@@ -11,7 +11,7 @@ import { handleAddToCart } from "@/utils/api";
 import Cookie from "js-cookie";
 import useCurrencyStore from "@/store/currencyStore";
 
-const API_KEY = "634f467018358f02e9dc1ae4";
+const API_KEY = "273098da3cf25e72a17434ae";
 
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams(); // Get the product ID from the URL

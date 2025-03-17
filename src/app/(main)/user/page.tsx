@@ -1,24 +1,26 @@
 "use client";
-import { useEffect } from "react";
-import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import ProfilePage from "@/components/ProfilePage";
+import { fetchUserDetails } from "@/utils/api";
 
 const UserPage = () => {
-    let token : string | undefined;
-    const router = useRouter();
-    // useEffect(() => {
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    //     token = Cookies.get("auth_token");
-    //     if(!token) {
-    //         router.replace('/register');
-    //     }
-    // }, [])
-    
+  const [user, setUser] = useState<User | null>(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function loadUser() {
+      const userData = await fetchUserDetails();
+      if (userData) setUser(userData);
+      else setError("Failed to load user details");
+    }
+    loadUser();
+  }, []);
+
+    console.log("user in fetch details", user);
    
   return (
     <div>
-        <ProfilePage user={{firstName: "vaxxnsh", email: "kakshit817@gmail.com"}} />
+        <ProfilePage user={{firstName: user?.name || "", email: user?.email || ""}} />
     </div>
   )
 }

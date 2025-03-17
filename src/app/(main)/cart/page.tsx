@@ -13,7 +13,7 @@ const Cart = () => {
   const [cart, setCart] = useState<CartResponse | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
-//   const [note, setNote] = useState<string>("")
+  //   const [note, setNote] = useState<string>("")
   const [updating, setUpdating] = useState<boolean>(false)
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({})
 
@@ -39,7 +39,7 @@ const Cart = () => {
       const res = await fetch("/api/cart/get", {
         method: "GET",
         credentials: "include", // ✅ Ensures JWT Cookie is Sent
-      });
+      })
 
       if (!res.ok) {
         throw new Error("Failed to fetch cart")
@@ -47,15 +47,15 @@ const Cart = () => {
 
       const data: CartResponse = await res.json()
       setCart(data)
-      console.log('fetched cart',data)
+      console.log("fetched cart", data)
     } catch (err) {
       setError((err as Error).message)
-    //   toast({
-    //     title: "Error",
-    //     description: (err as Error).message,
-    //     variant: "destructive",
-    //   })
-        alert(`Error : ${(err as Error).message}`)
+      //   toast({
+      //     title: "Error",
+      //     description: (err as Error).message,
+      //     variant: "destructive",
+      //   })
+      alert(`Error : ${(err as Error).message}`)
     } finally {
       setLoading(false)
     }
@@ -91,19 +91,19 @@ const Cart = () => {
         })
       }
 
-    //   toast({
-    //     title: "Cart updated",
-    //     description: "Item quantity has been updated",
-    //   })
-        alert('Cart Updated')
+      //   toast({
+      //     title: "Cart updated",
+      //     description: "Item quantity has been updated",
+      //   })
+      alert("Cart Updated")
     } catch (err) {
-    //   toast({
-    //     title: "Error",
-    //     description: (err as Error).message,
-    //     variant: "destructive",
-    //   })
-        
-        alert(`Error : ${(err as Error).message}`)
+      //   toast({
+      //     title: "Error",
+      //     description: (err as Error).message,
+      //     variant: "destructive",
+      //   })
+
+      alert(`Error : ${(err as Error).message}`)
     } finally {
       setUpdating(false)
     }
@@ -117,7 +117,28 @@ const Cart = () => {
   }
 
   const removeItem = async (itemId: string) => {
-        remove(itemId)
+    try {
+      setUpdating(true)
+      await remove(itemId)
+
+      // Update local state after successful removal
+      if (cart) {
+        const updatedItems = cart.cart.items.filter((item) => item.productId !== itemId)
+        setCart({
+          cart: {
+            ...cart.cart,
+            items: updatedItems,
+          },
+        })
+      }
+
+      alert("Item removed from cart")
+    } catch (err) {
+      alert(`Error: ${(err as Error).message}`)
+      console.error(err)
+    } finally {
+      setUpdating(false)
+    }
   }
 
   const updateCart = async () => {
@@ -135,21 +156,21 @@ const Cart = () => {
 
       await Promise.all(updatePromises)
 
-    //   toast({
-    //     title: "Cart updated",
-    //     description: "Your cart has been updated successfully",
-    //   })
+      //   toast({
+      //     title: "Cart updated",
+      //     description: "Your cart has been updated successfully",
+      //   })
 
-      alert('Cart Updated');
+      alert("Cart Updated")
     } catch (err) {
-        console.log(err);
-    //   toast({
-    //     title: "Error",
-    //     description: "Failed to update cart",
-    //     variant: "destructive",
-    //   })
+      console.log(err)
+      //   toast({
+      //     title: "Error",
+      //     description: "Failed to update cart",
+      //     variant: "destructive",
+      //   })
 
-        alert(`Error : Failed to update cart`)
+      alert(`Error : Failed to update cart`)
     } finally {
       setUpdating(false)
     }
@@ -190,7 +211,7 @@ const Cart = () => {
   }
   console.log(cart?.cart?.length)
   if (!cart || cart?.cart?.length === 0) {
-    console.log('cart is empty')
+    console.log("cart is empty")
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <div className="max-w-md mx-auto">
@@ -247,7 +268,7 @@ const Cart = () => {
                 </button>
               </div>
             </div>
-                      
+
             <div className="md:col-span-2 flex items-center md:justify-center">
               <span className="text-sm font-medium md:hidden mr-2">Price:</span>
               <span className="font-medium">₹ {item.product.price.toLocaleString()}</span>
@@ -278,76 +299,61 @@ const Cart = () => {
       </div>
 
       <div className="grid gap-8 mt-8">
-  {/* Order Summary Section */}
-  <div className="bg-white rounded-lg shadow-sm border border-border p-6">
-    <h3 className="text-lg font-medium mb-4">Order Summary</h3>
+        {/* Order Summary Section */}
+        <div className="bg-white rounded-lg shadow-sm border border-border p-6">
+          <h3 className="text-lg font-medium mb-4">Order Summary</h3>
 
-    <div className="space-y-2 mb-4">
-      <div className="flex justify-between py-2 border-b">
-        <span className="text-muted-foreground">Subtotal</span>
-        <span className="font-medium">₹ {calculateSubtotal().toLocaleString()}</span>
-      </div>
+          <div className="space-y-2 mb-4">
+            <div className="flex justify-between py-2 border-b">
+              <span className="text-muted-foreground">Subtotal</span>
+              <span className="font-medium">₹ {calculateSubtotal().toLocaleString()}</span>
+            </div>
 
-      {calculateSavings() > 0 && (
-        <div className="flex justify-between py-2 border-b">
-          <span className="text-muted-foreground">Savings</span>
-          <span className="font-medium text-green-600">- ₹ {calculateSavings().toLocaleString()}</span>
+            {calculateSavings() > 0 && (
+              <div className="flex justify-between py-2 border-b">
+                <span className="text-muted-foreground">Savings</span>
+                <span className="font-medium text-green-600">- ₹ {calculateSavings().toLocaleString()}</span>
+              </div>
+            )}
+
+            <div className="flex justify-between py-2 text-lg">
+              <span className="font-medium">Total</span>
+              <span className="font-semibold">₹ {(calculateSubtotal() - calculateSavings()).toLocaleString()}</span>
+            </div>
+          </div>
+
+          <div className="text-sm text-muted-foreground mb-6">Tax included. Shipping calculated at checkout.</div>
+
+          {/* Buttons */}
+          <div className="space-y-3">
+            <Button className="w-full" size="lg" onClick={() => alert("Proceeding to checkout")} disabled={updating}>
+              Checkout
+            </Button>
+
+            <Button variant="outline" className="w-full" size="lg" onClick={updateCart} disabled={updating}>
+              {updating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                "Update Cart"
+              )}
+            </Button>
+          </div>
         </div>
-      )}
 
-      <div className="flex justify-between py-2 text-lg">
-        <span className="font-medium">Total</span>
-        <span className="font-semibold">₹ {(calculateSubtotal() - calculateSavings()).toLocaleString()}</span>
+        {/* Continue Shopping Button */}
+        <div className="flex justify-start">
+          <Link
+            href="/products"
+            className="inline-flex items-center text-primary hover:text-primary/80 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Continue Shopping
+          </Link>
+        </div>
       </div>
-    </div>
-
-    <div className="text-sm text-muted-foreground mb-6">
-      Tax included. Shipping calculated at checkout.
-    </div>
-
-    {/* Buttons */}
-    <div className="space-y-3">
-      <Button
-        className="w-full"
-        size="lg"
-        onClick={() => alert("Proceeding to checkout")}
-        disabled={updating}
-      >
-        Checkout
-      </Button>
-
-      <Button
-        variant="outline"
-        className="w-full"
-        size="lg"
-        onClick={updateCart}
-        disabled={updating}
-      >
-        {updating ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Updating...
-          </>
-        ) : (
-          "Update Cart"
-        )}
-      </Button>
-    </div>
-  </div>
-
-  {/* Continue Shopping Button */}
-  <div className="flex justify-start">
-    <Link
-      href="/products"
-      className="inline-flex items-center text-primary hover:text-primary/80 transition-colors"
-    >
-      <ArrowLeft className="h-4 w-4 mr-2" />
-      Continue Shopping
-    </Link>
-  </div>
-</div>
-
-
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import Cookie from "js-cookie";
 
-function getUserIdFromToken(): string | null {
+export function getUserIdFromToken(): string | null {
   const token = Cookie.get('auth_token'); // Fetch cookie properly in Next.js
 
   if (!token) return null;
@@ -11,6 +11,30 @@ function getUserIdFromToken(): string | null {
     return decoded.userId;
   } catch (error) {
     console.error("Error decoding auth_token:", error);
+    return null;
+  }
+}
+
+export async function fetchUserDetails() : Promise<FetchUser | null> {
+  try {
+    const response = await fetch("/api/userdetails/get", {
+      method: "GET",
+      credentials : 'include',
+      headers: {
+        "Content-Type": "application/json",
+
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to fetch user details");
+    }
+
+    const data = await response.json();
+    return data.user; // Returns user object
+  } catch (error) {
+    console.error("Error fetching user details:", error);
     return null;
   }
 }
@@ -60,7 +84,7 @@ export async function addToCart(productId: string, quantity: number) {
     return data;
   } catch (error) {
     console.error('Error adding to cart:', error);
-    return { error: error.message || 'Unknown error' };
+    return { error: (error instanceof Error) ? error.message : 'Unknown error' };
   }
 }
 
@@ -119,4 +143,27 @@ export const handleRemoveItem = async (productId: string) => {
   }
 };
 
-  
+export const addAddress = async (userId: string, addressData: any) => {
+  try {
+    const response = await fetch("/api/address/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-user-id": userId,
+      },
+      body: JSON.stringify(addressData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to add address");
+    }
+
+    return data;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error("Error adding address:", error.message);
+    throw error;
+  }
+};

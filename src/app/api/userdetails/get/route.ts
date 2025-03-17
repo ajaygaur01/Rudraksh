@@ -7,14 +7,14 @@ export async function GET(req: Request) {
   try {
     // Extract user ID from request headers (set by middleware)
     const userId = req.headers.get("x-user-id");
-
+    console.log("userId in get function", userId);
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized: No user ID found" }, { status: 401 });
     }
 
     // Fetch user details from the database
     const user = await prisma.userDetails.findFirst({
-      where: { id:  prisma.userDetails.id },
+      where: { id:  userId },
     });
 
     if (!user) {

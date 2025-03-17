@@ -33,7 +33,6 @@ const Navbar = () => {
 
   const handleRedirect = () => {
     const token = Cookies.get("auth_token");
-    alert(token);
     if (token) {
       router.push("/user");
     } else {

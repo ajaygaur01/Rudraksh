@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { products } from "@/utils/constants";
 import useCurrencyStore from "@/store/currencyStore";
 
-const API_KEY = "634f467018358f02e9dc1ae4";
+const API_KEY = "273098da3cf25e72a17434ae";
 
 export default function CollectionShowcase() {
   const { currency } = useCurrencyStore();

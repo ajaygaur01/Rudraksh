@@ -43,5 +43,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: "/api/cart/:path*",
+  matcher:  ["/api/userdetails/get", "/api/cart/:path*"],
 };

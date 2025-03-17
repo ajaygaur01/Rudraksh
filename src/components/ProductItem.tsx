@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import useCurrencyStore from "@/store/currencyStore";
 
 gsap.registerPlugin(ScrollTrigger);
-const API_KEY = "634f467018358f02e9dc1ae4";
+const API_KEY = "273098da3cf25e72a17434ae";
 
 const ProductItem: React.FC<{ item: ProductShow }> = ({ item }) => {
   const cardRef = useRef<HTMLDivElement | null>(null);

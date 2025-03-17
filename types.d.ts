@@ -1,3 +1,9 @@
+declare module 'currency-converter-lt' {
+    export default class CurrencyConverter {
+      constructor(options?: { from?: string; to?: string; amount?: number });
+      convert(amount: number): Promise<number>;
+    }
+  }
 declare interface IconWithUrl {
     url: string;
     Icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>;
@@ -56,6 +62,8 @@ declare interface ProductShow    {
     id: number,
     name: string,
     originalPrice: string,
+    orgprice : number,
+    price : number,
     currentPrice: string,
     image: string,
     description ?: string

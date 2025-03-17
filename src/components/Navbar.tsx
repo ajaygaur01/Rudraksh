@@ -7,6 +7,8 @@ import Input from "./Input"
 import { ButtonNavLinks, TopNavIcon } from "@/utils/constants"
 import SelectCurrency from "./SelectCurrency"
 import Drawer from "./Drawer"
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation"
 
 type IconWithUrl = {
   Icon: React.ComponentType<{ size: number; strokeWidth: number; color: string }>
@@ -27,6 +29,17 @@ const Navbar = () => {
   const [lastScrollY, setLastScrollY] = useState(0)
   const [isOpen, setIsOpen] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const router = useRouter();
+
+  const handleRedirect = () => {
+    const token = Cookies.get("auth_token");
+    alert(token);
+    if (token) {
+      router.push("/user");
+    } else {
+      router.push("/register");
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -80,7 +93,12 @@ const Navbar = () => {
           <div className="hidden md:inline-flex px-8 py-3 flex-center gap-6">
             <Input searchVal={searchVal} setSearchVal={setSearchVal} className="mr-2" />
             {TopNavIcon.map((icon, index) => (
-              <NavIcon key={index} Icon={icon.Icon} url={icon.url} />
+              index === 2 ? 
+              (<button key={index} onClick={handleRedirect} className="px-2 py-2 inline-flex align-baseline hover:bg-[#ede9e0] rounded cursor-pointer">
+              <icon.Icon size={28} strokeWidth={1} color="#0A0A0A" />
+            </button>)
+              : 
+              (<NavIcon key={index} Icon={icon.Icon} url={icon.url} />)
             ))}
             <SelectCurrency isOpen={isOpen} setIsOpen={setIsOpen} />
           </div>
@@ -104,6 +122,7 @@ const Navbar = () => {
       "
         >
           {ButtonNavLinks.map((link, index) => (
+            <Link key={index} href={link.url}>
             <div key={index} className="relative text-center">
               <span
                 className={`text-base font-medium cursor-pointer ${
@@ -125,6 +144,7 @@ const Navbar = () => {
                 </span>
               )}
             </div>
+            </Link>
           ))}
         </div>
       </div>

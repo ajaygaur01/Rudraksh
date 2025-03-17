@@ -9,6 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { handleAddToCart } from "@/utils/api";
 import Cookie from "js-cookie";
+import useCurrencyStore from "@/store/currencyStore";
+
+const API_KEY = "634f467018358f02e9dc1ae4";
 
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams(); // Get the product ID from the URL
@@ -19,6 +22,8 @@ const ProductDetailPage: React.FC = () => {
   const [pinCode, setPinCode] = useState<string>("");
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
+  const [convertedPrice, setConvertedPrice] = useState<string | null>(null);
+  const { currency } = useCurrencyStore();
 
   useEffect(() => {
     if (!id) return;
@@ -37,6 +42,34 @@ const ProductDetailPage: React.FC = () => {
 
     fetchProduct();
   }, [id]);
+
+   useEffect(() => {
+      const convertCurrency = async () => {
+        if (currency === "INR") {
+          setConvertedPrice(
+            new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(product?.price || 0)
+          );
+          return;
+        }
+        try {
+          const response = await fetch(
+            `https://v6.exchangerate-api.com/v6/${API_KEY}/pair/INR/${currency}/${product?.price || 0}`
+          );
+          const data = await response.json();
+          if (data.result === "success") {
+            setConvertedPrice(
+              new Intl.NumberFormat("en-IN", { style: "currency", currency: currency || "INR" }).format(data.conversion_result)
+            );
+          } else {
+            setConvertedPrice("Error: Unable to convert");
+          }
+        } catch (error) {
+          console.error("Currency conversion error:", error);
+          setConvertedPrice("Error: Unable to convert");
+        }
+      };
+      convertCurrency();
+    }, [currency, product?.price]);
 
   const handleQuantityChange = (action: 'increase' | 'decrease') => {
     if (action === 'increase') {
@@ -162,7 +195,7 @@ const ProductDetailPage: React.FC = () => {
               
               {/* Price */}
               <div className="text-2xl font-bold">
-                ₹ {product.price.toLocaleString()}
+              {convertedPrice || "Loading..."}
               </div>
               
               {/* Quantity Selector */}

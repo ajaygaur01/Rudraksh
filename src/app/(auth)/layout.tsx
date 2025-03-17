@@ -1,12 +1,12 @@
 "use client";
 import Image from "next/image";
 import HomeBtn from "@/components/HomeBtn";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import Cookies from "js-cookie";
+// import { useRouter } from "next/navigation";
+// import { useEffect } from "react";
+// import Cookies from "js-cookie";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
-  let token : string | undefined;
+  // let token : string | undefined;
   // const router = useRouter();
   //   useEffect(() => {
   //       // eslint-disable-next-line react-hooks/exhaustive-deps

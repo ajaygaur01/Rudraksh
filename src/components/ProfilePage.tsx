@@ -6,6 +6,7 @@ import { User, Package, MapPin, Key, LogOut, Edit } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import useLogout from "@/utils/logout"
 
 interface UserData {
   firstName: string
@@ -24,7 +25,7 @@ interface ProfilePageProps {
 
 export default function ProfilePage({ user }: ProfilePageProps) {
   const [activeTab, setActiveTab] = useState("profile")
-
+  const logout = useLogout();
   // Default values if not provided
   const userData: UserData = {
     firstName: user.firstName || "User",
@@ -38,7 +39,7 @@ export default function ProfilePage({ user }: ProfilePageProps) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto mt-10 px-4 py-8">
       <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar */}
         <div className="w-full md:w-1/3 lg:w-1/4">
@@ -106,10 +107,10 @@ export default function ProfilePage({ user }: ProfilePageProps) {
                   <span>Change password</span>
                 </Link>
 
-                <Link href="/logout" className="flex items-center p-4 border-l-4 border-transparent hover:bg-accent">
+                <button onClick={logout} className="flex items-center p-4 border-l-4 border-transparent hover:bg-accent">
                   <LogOut className="h-5 w-5 mr-3 text-muted-foreground" />
                   <span>Logout</span>
-                </Link>
+                </button>
               </nav>
             </CardContent>
           </Card>

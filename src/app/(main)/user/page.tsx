@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import ProfilePage from "@/components/ProfilePage";
 
 const UserPage = () => {
     let token : string | undefined;
@@ -16,7 +17,9 @@ const UserPage = () => {
     
    
   return (
-    <div>UserPage</div>
+    <div>
+        <ProfilePage user={{firstName: "vaxxnsh", email: "kakshit817@gmail.com"}} />
+    </div>
   )
 }
 

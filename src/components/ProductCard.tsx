@@ -1,7 +1,9 @@
 "use client";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Heart } from 'lucide-react';
+import useCurrencyStore from '@/store/currencyStore';
+import CurrencyConverter from "currency-converter-lt";
 
 interface ProductCardProps {
   id: number;
@@ -24,47 +26,57 @@ const RudrakshaProductCard: React.FC<ProductCardProps> = ({
   originalPrice,
   currentPrice,
   discountPercentage,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   rating,
   image,
   isFavorite = false,
   onFavoriteToggle,
   onAddToCart,
 }) => {
-  // Format price to Indian Rupee format
-  const formatPrice = (price: number): string => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+  const { currency } = useCurrencyStore(); // Get selected currency
 
-  // Generate star rating elements
-  const renderStars = (rating: number) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
+  // State to store converted prices
+  const [formattedPrice, setFormattedPrice] = useState<string>('');
+  const [formattedOriginalPrice, setFormattedOriginalPrice] = useState<string>('');
 
-    for (let i = 1; i <= 5; i++) {
-      if (i <= fullStars) {
-        stars.push(
-          <span key={i} className="text-amber-500">★</span>
-        );
-      } else if (i === fullStars + 1 && hasHalfStar) {
-        stars.push(
-          <span key={i} className="text-amber-500">★</span>
-        );
-      } else {
-        stars.push(
-          <span key={i} className="text-amber-300">★</span>
-        );
+  // Function to convert and format price
+
+
+
+  // Update converted price whenever price or currency changes
+  useEffect(() => {
+    console.log("Currency", currency);
+    const formatPrice = async (price: number): Promise<string> => {
+      if (!currency || currency === "INR") {
+        return new Intl.NumberFormat("en-IN", {
+          style: "currency",
+          currency: "INR",
+          maximumFractionDigits: 2,
+        }).format(price);
       }
-    }
+  
+      try {
+        const currencyConverter = new CurrencyConverter({ from: "INR", to: currency });
+        const convertedPrice = await currencyConverter.convert(price);
+        return new Intl.NumberFormat("en-IN", {
+          style: "currency",
+          currency: currency,
+          maximumFractionDigits: 2,
+        }).format(convertedPrice);
+      } catch (error) {
+        console.error("Currency conversion error:", error);
+        return "Error converting price";
+      }
+    };
+    const updatePrices = async () => {
+      setFormattedPrice(await formatPrice(currentPrice));
+      setFormattedOriginalPrice(await formatPrice(originalPrice));
+    };
 
-    return stars;
-  };
+    updatePrices();
+  }, [currentPrice, originalPrice, currency, formattedPrice]);
 
-  // Calculate discount percentage if not provided
+  // Calculate discount percentage
   const discount = discountPercentage || 
     Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
 
@@ -111,25 +123,20 @@ const RudrakshaProductCard: React.FC<ProductCardProps> = ({
           <p className="mb-2 text-sm text-stone-600 line-clamp-2">{description}</p>
         )}
         
-        {/* Star rating */}
-        <div className="mb-2 flex">
-          {renderStars(rating)}
-        </div>
-        
         {/* Price */}
         <div className="flex items-center gap-2">
           <span className="text-lg font-bold text-stone-800">
-            {formatPrice(currentPrice)}
+            {formattedPrice || "Loading..."}
           </span>
           
           {originalPrice > currentPrice && (
             <span className="text-sm text-stone-400 line-through">
-              {formatPrice(originalPrice)}
+              {formattedOriginalPrice || "Loading..."}
             </span>
           )}
         </div>
         
-        {/* Add to cart button - hidden by default, shows on hover */}
+        {/* Add to cart button */}
         <button
           onClick={() => onAddToCart?.(id)}
           className="mt-3 w-full transform rounded bg-amber-600 py-2 text-sm font-medium text-white transition-all hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"

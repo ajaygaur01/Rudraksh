@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     // First, find the UserDetails record where userId matches the JWT token ID
     const userDetails = await prisma.userDetails.findFirst({ 
-      where: { userId:prisma.userDetails.id } 
+      where: { id: userId } 
     });
     
     if (!userDetails) {
@@ -59,10 +59,11 @@ export async function POST(req: NextRequest) {
     ]);
 
     return NextResponse.json({ message: "Item added to cart" }, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("❌ Server Error:", error);
 
-    if (error.code === "P2003") {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((error as any).code === "P2003") {
       return NextResponse.json({ error: "Invalid foreign key reference" }, { status: 400 });
     }
 

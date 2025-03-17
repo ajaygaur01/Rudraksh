@@ -1,11 +1,69 @@
 "use client";
 
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { products } from "@/utils/constants";
+import useCurrencyStore from "@/store/currencyStore";
+
+const API_KEY = "634f467018358f02e9dc1ae4";
 
 export default function CollectionShowcase() {
+  const { currency } = useCurrencyStore();
+  const [convertedPrices, setConvertedPrices] = useState<{ [key: number]: { price: string; orgprice: string } }>({});
+
+  useEffect(() => {
+    const convertPrices = async () => {
+      const conversions: { [key: number]: { price: string; orgprice: string } } = {};
+
+      await Promise.all(
+        products.map(async (product) => {
+          const priceValue = product.price;
+          const orgPriceValue = product.orgprice;
+
+          if (isNaN(priceValue) || priceValue <= 0 || isNaN(orgPriceValue) || orgPriceValue <= 0) {
+            conversions[product.id] = { price: "Error: Invalid price", orgprice: "Error: Invalid price" };
+            return;
+          }
+
+          if (currency === "INR") {
+            conversions[product.id] = {
+              price: new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(priceValue),
+              orgprice: new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(orgPriceValue),
+            };
+            return;
+          }
+
+          try {
+            const [priceResponse, orgPriceResponse] = await Promise.all([
+              fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/pair/INR/${currency}/${priceValue}`),
+              fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/pair/INR/${currency}/${orgPriceValue}`)
+            ]);
+
+            const [priceData, orgPriceData] = await Promise.all([priceResponse.json(), orgPriceResponse.json()]);
+
+            conversions[product.id] = {
+              price: priceData.result === "success"
+                ? new Intl.NumberFormat("en-IN", { style: "currency", currency }).format(priceData.conversion_result ?? 0)
+                : "Error: Unable to convert",
+              orgprice: orgPriceData.result === "success"
+                ? new Intl.NumberFormat("en-IN", { style: "currency", currency }).format(orgPriceData.conversion_result ?? 0)
+                : "Error: Unable to convert"
+            };
+          } catch (error) {
+            console.error("Currency conversion error:", error);
+            conversions[product.id] = { price: "Error: Unable to convert", orgprice: "Error: Unable to convert" };
+          }
+        })
+      );
+
+      setConvertedPrices(conversions);
+    };
+
+    convertPrices();
+  }, [currency]);
+
   return (
     <section className="py-12 px-4 max-w-7xl mx-auto">
       <h2 className="text-2xl md:text-3xl font-medium text-center mb-10 tracking-wide text-gray-700">
@@ -30,11 +88,6 @@ export default function CollectionShowcase() {
                   BEST OFFER!
                 </div>
 
-                {/* Free tag */}
-                {/* <div className="absolute bottom-2 right-2 bg-red-600 text-white text-xs font-bold p-2 rounded-full h-10 w-10 flex items-center justify-center">
-                  FREE
-                </div> */}
-
                 {/* Shop now button (hidden by default, shown on hover) */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <button className="bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium py-2 px-4 rounded-md transition-colors">
@@ -51,7 +104,8 @@ export default function CollectionShowcase() {
                   {product.name}
                 </Link>
               </h3>
-              <p className="text-gray-700">{product.currentPrice}</p>
+              <p className="text-gray-500 line-through">{convertedPrices[product.id]?.orgprice || product.originalPrice}</p>
+              <p className="text-green-600 font-medium">{convertedPrices[product.id]?.price || product.currentPrice}</p>
             </div>
           </div>
         ))}
@@ -63,6 +117,5 @@ export default function CollectionShowcase() {
         </Button>
       </div>
     </section>
-  )
+  );
 }
-

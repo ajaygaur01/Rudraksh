@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
@@ -11,6 +11,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation'; 
 import { signIn } from "next-auth/react";
+import Cookies from "js-cookie";
 // Define the validation schema using Zod
 const signupSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -31,58 +32,57 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
-  // Function to handle Google Sign-In
+
+  const formik = useFormik<SignupFormValues>({
+    initialValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    validationSchema: toFormikValidationSchema(signupSchema),
+    onSubmit: async (values) => {
+      try {
+        console.log("Form submitted:", values);
+        await axios.post("http://localhost:3000/api/auth/register", values, {
+          headers: { "Content-Type": "application/json" },
+        });
+        alert("Registered Successfully");
+        router.push("/");
+      } catch (error) {
+        console.log(error);
+        if (axios.isAxiosError(error) && error.response) {
+          alert(error.response.data.error);
+        } else {
+          alert("An unexpected error occurred.");
+        }
+      }
+    },
+  });
+
+  useEffect(() => {
+    const token = Cookies.get("auth_token");
+    console.log("Auth Token:", token); // ✅ Debugging log
+
+    if (token) {
+      setIsAuthenticated(true);
+      router.replace("/user");
+    }
+  }, [router]); // ✅ Runs once after mount
+
+  if (isAuthenticated) return null; // ✅ Prevent rendering if user is already authenticated
+
   const handleGoogleSignIn = async () => {
     try {
-      await signIn("google", { callbackUrl: "/" }); // Redirect to homepage after Google Sign-In
+      await signIn("google", { callbackUrl: "/" });
     } catch (error) {
       console.error("Google Sign-In failed:", error);
       alert("Google Sign-In failed. Please try again.");
     }
   };
 
-
-
-
-
-
-
-
-
-  const formik = useFormik<SignupFormValues>({
-    initialValues: {
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    },
-    validationSchema: toFormikValidationSchema(signupSchema),
-    onSubmit: async (values) => {
-      try {
-        console.log('Form submitted:', values);
-        // Add your signup logic here
-        try {
-         await axios.post("http://localhost:3000/api/auth/register" , values , {
-          headers: { "Content-Type": "application/json" }
-         })
-          console.log(values)
-          alert("Registered Successfully")
-          router.push("/")
-        } catch (error) {
-          console.log(error)
-          if (axios.isAxiosError(error) && error.response) {
-            alert(error.response.data.error);
-          } else {
-            console.error(error);
-            alert("An unexpected error occurred.");
-          }
-        }
-      } catch (error) {
-        console.error('Signup failed:', error);
-      }
-    }
-  });
 
 
   return (

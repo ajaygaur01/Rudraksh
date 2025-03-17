@@ -1,11 +1,14 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import useCurrencyStore from "@/store/currencyStore";
+
+const API_KEY = "634f467018358f02e9dc1ae4"; // Replace with your actual API key
 
 type ProductCardProps = {
   product: Product;
@@ -14,6 +17,36 @@ type ProductCardProps = {
 
 export default function ProductCard({ product, gridView }: ProductCardProps) {
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [convertedPrice, setConvertedPrice] = useState<string | null>(null);
+  const { currency } = useCurrencyStore();
+
+  useEffect(() => {
+    const convertCurrency = async () => {
+      if (currency === "INR") {
+        setConvertedPrice(
+          new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(product.price)
+        );
+        return;
+      }
+      try {
+        const response = await fetch(
+          `https://v6.exchangerate-api.com/v6/${API_KEY}/pair/INR/${currency}/${product.price}`
+        );
+        const data = await response.json();
+        if (data.result === "success") {
+          setConvertedPrice(
+            new Intl.NumberFormat("en-IN", { style: "currency", currency: currency || "INR" }).format(data.conversion_result)
+          );
+        } else {
+          setConvertedPrice("Error: Unable to convert");
+        }
+      } catch (error) {
+        console.error("Currency conversion error:", error);
+        setConvertedPrice("Error: Unable to convert");
+      }
+    };
+    convertCurrency();
+  }, [currency, product.price]);
 
   const toggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -65,7 +98,7 @@ export default function ProductCard({ product, gridView }: ProductCardProps) {
             <h3 className="text-sm font-medium line-clamp-2 h-10">{product.name}</h3>
             <div className="mt-1 mb-2">{renderRatingStars(product.rating)}</div>
             <div className="flex items-center justify-between">
-              <p className="text-lg font-semibold">₹ {product.price.toLocaleString()}</p>
+              <p className="text-lg font-semibold">{convertedPrice || "Loading..."}</p>
             </div>
             <Button className="w-full mt-3 bg-amber-500 hover:bg-amber-600">ADD TO CART</Button>
           </div>
@@ -92,7 +125,7 @@ export default function ProductCard({ product, gridView }: ProductCardProps) {
               <p className="text-sm text-gray-500 mt-1 line-clamp-2">{product.description}</p>
               <div className="mt-2">{renderRatingStars(product.rating)}</div>
               <div className="flex items-center justify-between mt-2">
-                <p className="text-lg font-semibold">₹ {product.price.toLocaleString()}</p>
+                <p className="text-lg font-semibold">{convertedPrice || "Loading..."}</p>
                 <Button className="bg-amber-500 hover:bg-amber-600">ADD TO CART</Button>
               </div>
             </div>

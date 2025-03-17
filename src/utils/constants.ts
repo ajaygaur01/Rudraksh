@@ -1,9 +1,4 @@
 import { Heart, ShoppingBag, User } from "lucide-react";
-import Cookies from "js-cookie";
-
-
-const token = Cookies.get("auth_token");
-
 
 export  const TopNavIcon : IconWithUrl[] = [
     {
@@ -15,7 +10,7 @@ export  const TopNavIcon : IconWithUrl[] = [
         Icon: Heart
     },
     {   
-        url: token ? 'user' : '/register',
+        url:  '/register',
         Icon : User
     }
 ]
@@ -23,7 +18,7 @@ export  const TopNavIcon : IconWithUrl[] = [
 export const ButtonNavLinks : BottomNavLinks[] = [
     {
         title: 'Rudraksha',
-        url: '/'
+        url: '/collections/rudraksha-wood-mala'
     },
     {
         title: 'Exclusive',
@@ -109,6 +104,8 @@ export const rudrakshaItems: ProductShow[] = [
     description: "Spiritual enlightenment",
     originalPrice: "Rs. 500,000",
     currentPrice: "Rs. 450,000.00",
+    orgprice : 500000.00,
+    price: 450000.00,
     image: "/images/Collections/Rudraksha/1Mukhi.webp"
   },
   {
@@ -117,6 +114,8 @@ export const rudrakshaItems: ProductShow[] = [
     description: "Harmony, balance",
     originalPrice: "Rs. 50,000",
     currentPrice: "Rs. 45,000.00",
+    orgprice : 50000.00,
+    price: 45000.00,
     image: "/images/Collections/Rudraksha/2Mukhi.webp"
   },
   {
@@ -125,6 +124,8 @@ export const rudrakshaItems: ProductShow[] = [
     description: "Confidence, energy",
     originalPrice: "Rs. 20,000",
     currentPrice: "Rs. 18,000.00",
+    orgprice : 20000.00,
+    price : 18000.00,
     image: "/images/Collections/Rudraksha/3Mukhi.webp"
   },
   {
@@ -133,6 +134,8 @@ export const rudrakshaItems: ProductShow[] = [
     description: "Knowledge, creativity",
     originalPrice: "Rs. 25,000",
     currentPrice: "Rs. 22,500.00",
+    orgprice : 25000.00,
+    price : 22500.00,
     image: "/images/Collections/Rudraksha/4Mukhi.webp"
   },
   {
@@ -140,7 +143,10 @@ export const rudrakshaItems: ProductShow[] = [
     name: "Paanch Mukhi Rudraksha",
     description: "Peace, meditation",
     originalPrice: "Rs. 5,000",
+
     currentPrice: "Rs. 4,500.00",
+    orgprice : 5000.00,
+    price: 4500.00,
     image: "/images/Collections/Rudraksha/5Mukhi.webp"
   },
   {
@@ -149,6 +155,8 @@ export const rudrakshaItems: ProductShow[] = [
     description: "Willpower, intelligence",
     originalPrice: "Rs. 12,000",
     currentPrice: "Rs. 10,800.00",
+    orgprice : 12000.00,
+    price : 10800.00,
     image: "/images/Collections/Rudraksha/6Mukhi.webp"
   },
   {
@@ -156,7 +164,9 @@ export const rudrakshaItems: ProductShow[] = [
     name: "Saat Mukhi Rudraksha",
     description: "Wealth, prosperity",
     originalPrice: "Rs. 18,000",
-    currentPrice: "Rs. 16,200.00",
+    currentPrice: "Rs. 16,200.00", 
+    orgprice : 18000.00,
+    price: 16200.00, 
     image: "/images/Collections/Rudraksha/7Mukhi.webp"
   },
   {
@@ -165,6 +175,8 @@ export const rudrakshaItems: ProductShow[] = [
     description: "Success, obstacles",
     originalPrice: "Rs. 30,000",
     currentPrice: "Rs. 27,000.00",
+    orgprice : 30000.00,
+    price : 27000.00,
     image: "/images/Collections/Rudraksha/8Mukhi.webp"
   },
   {
@@ -173,6 +185,8 @@ export const rudrakshaItems: ProductShow[] = [
     description: "Strength, courage",
     originalPrice: "Rs. 40,000",
     currentPrice: "Rs. 36,000.00",
+    orgprice : 40000.00,
+    price:  36000.00,
     image: "/images/Collections/Rudraksha/9Mukhi.webp"
   },
   {
@@ -181,6 +195,8 @@ export const rudrakshaItems: ProductShow[] = [
     description: "Protection, peace",
     originalPrice: "Rs. 60,000",
     currentPrice: "Rs. 54,000.00",
+    orgprice : 60000.00,
+    price: 54000.00,
     image: "/images/Collections/Rudraksha/10Mukhi.webp"
   },
   // You can add Mukhi 11 to 21 similarly with their descriptions.
@@ -284,6 +300,8 @@ export const products: ProductShow[] = [
     name: "2 Mukhi Rudraksha Mala",
     originalPrice: "Rs. 3,000.00",
     currentPrice: "Rs. 2,500.00",
+    price : 2500.00,
+    orgprice : 3000.00,
     image: "/images/Collections/Rudraksha/2Mukhi.webp",
     description: "Lab-certified Indonesian Rudraksha mala",
   },
@@ -292,6 +310,8 @@ export const products: ProductShow[] = [
     name: "3 Mukhi Rudraksha Mala",
     originalPrice: "Rs. 3,000.00",
     currentPrice: "Rs. 2,500.00",
+    price : 2500.00,
+    orgprice : 3000.00,
     image: "/images/Collections/Rudraksha/3mukhi.webp",
     description: "Lab-certified Indonesian Rudraksha mala",
   },
@@ -300,6 +320,8 @@ export const products: ProductShow[] = [
     name: "4 Mukhi Rudraksha mala",
     originalPrice: "Rs. 2,200.00",
     currentPrice: "Rs. 1,800.00",
+    price : 1800.00,
+    orgprice : 2200.00,
     image: "/images/Collections/Rudraksha/4mukhii.webp",
     description: "Lab-certified Indonesian Rudraksha mala",
   },
@@ -308,6 +330,8 @@ export const products: ProductShow[] = [
     name: "5 mukhi rudraksha mala with 108+1 beads",
     originalPrice: "Rs. 750.00",
     currentPrice: "Rs. 599.00",
+    price : 599.00,
+    orgprice : 750.00,
     image: "/images/Collections/Rudraksha/5mukhi.png",
     description: "Lab-certified Indonesian Rudraksha mala",
   },
@@ -316,6 +340,8 @@ export const products: ProductShow[] = [
     name: "6 Mukhi Rudraksha mala",
     originalPrice: "Rs. 2,200.00",
     currentPrice: "Rs. 1,800.00",
+    price : 1800.00,
+    orgprice : 2200.00,
     image: "/images/Collections/Rudraksha/6mukhi.webp",
     description: "Lab-certified Indonesian Rudraksha mala",
   },
@@ -324,6 +350,8 @@ export const products: ProductShow[] = [
     name: "7 Mukhi Rudraksha mala",
     originalPrice: "Rs. 4,500.00",
     currentPrice: "Rs. 3,999.00",
+    price : 3999.00,
+    orgprice : 4500.00,
     image: "/images/Collections/Rudraksha/7Mukhi.webp",
     description: "Lab-certified Indonesian Rudraksha mala",
   },
@@ -332,6 +360,8 @@ export const products: ProductShow[] = [
     name: "8 Mukhi Rudraksha Mala",
     originalPrice: "Rs. 2,500.00",
     currentPrice: "Rs. 2,000.00",
+    price : 2000.00,
+    orgprice : 2500.00,
     image: "/images/Collections/Rudraksha/8mukhii.webp",
     description: "Lab-certified Indonesian Rudraksha mala",
   },
@@ -340,6 +370,8 @@ export const products: ProductShow[] = [
     name: "9 Mukhi Rudraksha Mala",
     originalPrice: "Rs. 3,000.00",
     currentPrice: "Rs. 2,500.00",
+    price : 2500.00,
+    orgprice : 3000.00,
    image: "/images/Collections/Rudraksha/9mukhi.webp",
     description: "Lab-certified Indonesian Rudraksha mala",
   },

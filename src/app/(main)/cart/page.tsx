@@ -47,6 +47,7 @@ const Cart = () => {
 
       const data: CartResponse = await res.json()
       setCart(data)
+      //console.log("cart" , cart)
     } catch (err) {
       setError((err as Error).message)
     //   toast({

@@ -116,7 +116,7 @@ const Cart = () => {
   }
 
   const removeItem = async (itemId: string) => {
-        remove("cm84r621l0000n4z81e4ldm2s",itemId)
+        remove(itemId)
   }
 
   const updateCart = async () => {
@@ -236,7 +236,7 @@ const Cart = () => {
                   </p>
                 </div>
                 <button
-                  onClick={() => removeItem(item.id)}
+                  onClick={() => removeItem(item.productId)}
                   className="text-sm text-muted-foreground hover:text-destructive flex items-center gap-1 w-fit mt-2 transition-colors"
                   disabled={updating}
                 >
@@ -245,7 +245,7 @@ const Cart = () => {
                 </button>
               </div>
             </div>
-
+                      
             <div className="md:col-span-2 flex items-center md:justify-center">
               <span className="text-sm font-medium md:hidden mr-2">Price:</span>
               <span className="font-medium">₹ {item.product.price.toLocaleString()}</span>

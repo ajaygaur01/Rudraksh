@@ -22,7 +22,7 @@ export async function middleware(req: NextRequest) {
     console.log("✅ Full Decoded Payload:", payload);
     
     // Your token contains "id", not "userId" based on the cookie you shared
-    const userId = payload.id as string;
+    const userId = payload.userId as string;
     
     if (!userId) {
       console.error("❌ Token does not contain a valid id");

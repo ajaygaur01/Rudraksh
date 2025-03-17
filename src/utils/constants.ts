@@ -1,4 +1,8 @@
 import { Heart, ShoppingBag, User } from "lucide-react";
+import Cookies from "js-cookie";
+
+
+const token = Cookies.get("auth_token");
 
 
 export  const TopNavIcon : IconWithUrl[] = [
@@ -11,7 +15,7 @@ export  const TopNavIcon : IconWithUrl[] = [
         Icon: Heart
     },
     {   
-        url: '/register',
+        url: token ? 'user' : '/register',
         Icon : User
     }
 ]

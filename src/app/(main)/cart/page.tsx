@@ -24,7 +24,7 @@ const Cart = () => {
   }, [])
 
   useEffect(() => {
-    if (cart) {
+    if (cart && cart.cart.length > 0) {
       const initialQuantities: { [key: string]: number } = {}
       cart.cart.items.forEach((item) => {
         initialQuantities[item.id] = item.quantity
@@ -47,6 +47,7 @@ const Cart = () => {
 
       const data: CartResponse = await res.json()
       setCart(data)
+      console.log('fetched cart',data)
     } catch (err) {
       setError((err as Error).message)
     //   toast({
@@ -187,8 +188,9 @@ const Cart = () => {
       </div>
     )
   }
-
-  if (!cart || cart.cart.items.length === 0) {
+  console.log(cart?.cart?.length)
+  if (!cart || cart?.cart?.length === 0) {
+    console.log('cart is empty')
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <div className="max-w-md mx-auto">

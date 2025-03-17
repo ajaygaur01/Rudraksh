@@ -8,6 +8,26 @@ import jwt from "jsonwebtoken";
 const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
+
+
+  const [user, userDetails] = await prisma.$transaction([
+    prisma.user.upsert({
+      where: { email },
+      update: { name },
+      create: { email, name },
+    }),
+    prisma.userDetails.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        role: false,
+        user: { connect: { email } }, // No need to fetch user separately
+      },
+    }),
+  ]);
+
+  
   try {
     const { email, password } = await req.json();
 
@@ -39,7 +59,7 @@ export async function POST(req: Request) {
 
     // Generate a JWT token
     const token = jwt.sign(
-      { userId: user.userId, email: user.email, role: user.role },
+      { id: userDetails.id, email: userDetails.email,},
       process.env.JWT_SECRET!,
       { expiresIn: "7d" }
     );

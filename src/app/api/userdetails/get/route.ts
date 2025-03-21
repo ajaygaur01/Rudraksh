@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 export async function GET(req: Request) {
   try {
     // Extract user ID from request headers (set by middleware)
-    const userId = req.headers.get("x-user-id");
+    const userId = req.headers.get("X-User-Id");
 
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized: No user ID found" }, { status: 401 });

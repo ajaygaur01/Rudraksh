@@ -39,7 +39,7 @@ export async function POST(req : Request) {
 
     response.headers.set(
       "Set-Cookie",
-      `auth_token=${token}; Path=/; HttpOnly; Secure=${process.env.NODE_ENV === "production"}; SameSite=Lax; Max-Age=604800`
+      `auth_token=${token}; Path=/; Secure=${process.env.NODE_ENV === "production"}; SameSite=Lax; Max-Age=604800`
     );
 
     return response;

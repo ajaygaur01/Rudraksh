@@ -103,3 +103,20 @@ interface CartResponse {
     quantity: number;
     product: Product;
   }
+
+interface User {
+    id: string;
+    role: boolean;
+    name: string;
+    email: string | null;
+    password: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: string;
+    resetToken: string | null;
+    resetTokenExpiry: Date | null;
+}
+
+type FetchUser =
+  | { user: User  } // Success response
+  | { error: string }; // Error response

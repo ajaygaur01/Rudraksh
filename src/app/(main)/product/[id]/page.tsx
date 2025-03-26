@@ -108,6 +108,13 @@ const ProductDetailPage: React.FC = () => {
     document.body.style.overflow = 'auto';
   };
 
+  const calculateAverageRating = (reviews: { rating: number }[]) => {
+    if (!reviews || reviews.length === 0) return 0;
+    
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return totalRating / reviews.length;
+  };
+
   const navigateImage = (direction: 'next' | 'prev') => {
     if (!product) return;
     
@@ -182,7 +189,7 @@ const ProductDetailPage: React.FC = () => {
                   {[...Array(5)].map((_, i) => (
                     <Star 
                       key={i} 
-                      className={`w-5 h-5 ${i < Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-200 text-gray-200'}`} 
+                      className={`w-5 h-5 ${i < Math.floor(calculateAverageRating(product.reviews)) ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-200 text-gray-200'}`} 
                     />
                   ))}
                 </div>

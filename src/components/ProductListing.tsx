@@ -23,7 +23,7 @@ export default function ProductListing({products} :
 {
     products: Product[]
 }) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(products)
   const [filters, setFilters] = useState<Filters>({
     category: [],

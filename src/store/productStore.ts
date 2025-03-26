@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-// Define the Product type
+
 interface Product {
   id: string;
   name: string;
@@ -15,7 +15,6 @@ interface Product {
   isConsecrated: boolean;
 }
 
-// Define the store's state and actions
 interface ProductStore {
   products: Product[];
   setProducts: (products: Product[]) => void;

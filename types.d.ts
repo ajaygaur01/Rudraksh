@@ -45,6 +45,7 @@ declare interface CollectionItems {
 }
 
 interface Product {
+    [x: string]: { rating: number; }[];
     id: string
     name: string
     description: string

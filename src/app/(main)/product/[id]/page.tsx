@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { handleAddToCart } from "@/utils/api";
 import Cookie from "js-cookie";
 import useCurrencyStore from "@/store/currencyStore";
+import ProductReviews from "@/components/ProductReviews";
 
 const API_KEY = "273098da3cf25e72a17434ae";
 
@@ -310,6 +311,10 @@ const ProductDetailPage: React.FC = () => {
                 Stay connected to Adiyogi - the source of yoga with Isha&apos;s Adiyogi Rudraksha bead. Sourced from the Himalayas, this genuine Panchamukhi Rudraksha bead has been consecrated and energized at the Isha Yoga Centre. Once a part of the rudraksha mala that adorned the Adiyogi, it is a potent tool for self-transformation that brings balance, clarity and health to one&apos;s life. It comes with a pure silver chain and is designed to sit at the pit of your throat. Make yourself available to Adiyogi&apos;s grace with this powerful Rudraksha.
               </p>
             </div>
+          </div>
+
+          <div id="reviews" className="mt-12 space-y-6">
+              <ProductReviews productId={product.id} />
           </div>
         </div>
       </main>

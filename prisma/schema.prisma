@@ -68,6 +68,7 @@ model UserDetails {
   cart             Cart?
   orders           Order[]
   user             User      @relation("UserToUserDetails", fields: [userId], references: [id])
+    reviews          Review[]  // Relation to reviews
 }
 
 model Address {
@@ -93,7 +94,20 @@ model ProductDetails {
   category    String[]
   cartItems   CartItem[]
   orderItems  OrderItem[]
+   reviews     Review[]    // Relation to reviews
 }
+model Review {
+  id          String      @id @default(uuid())
+  productId   String
+  userId      String
+  rating      Int
+  description String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  product     ProductDetails @relation(fields: [productId], references: [id])
+  user        UserDetails @relation(fields: [userId], references: [id])
+}
+
 
 model Cart {
   id     String      @id @default(uuid())

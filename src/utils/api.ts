@@ -143,6 +143,7 @@ export const handleRemoveItem = async (productId: string) => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const addAddress = async (userId: string, addressData: any) => {
   try {
     const response = await fetch("/api/address/add", {
@@ -167,3 +168,79 @@ export const addAddress = async (userId: string, addressData: any) => {
     throw error;
   }
 };
+
+export async function addReview({
+  productId,
+  rating,
+  description,
+}: {
+  productId: string;
+  rating: number;
+  description: string;
+}) {
+
+  const token = document.cookie
+    .split("; ")
+    .find(row => row.startsWith("auth_token="))
+    ?.split("=")[1];
+
+  console.log("---cookie---", token);
+
+  let userId = null;
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1])); // Decode JWT
+      userId = payload.id || payload.userId;
+    } catch (error) {
+      console.error("Error decoding JWT:", error);
+    }
+  }
+
+  console.log("---userId---", userId);
+
+  if (!userId) {
+    console.error("No user ID found in token.");
+    return { error: "User not authenticated" };
+  }
+  try {
+    const response = await fetch("/api/reviews/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      credentials : 'include',
+      body: JSON.stringify({ productId, rating, description }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to add review");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error adding review:", error);
+    return { error: (error instanceof Error) ? error.message : "An unknown error occurred" };
+  }
+}
+
+export async function getReviews(productId: string) {
+  try {
+    const response = await fetch(`/api/reviews/${productId}`, {
+      method: "GET",
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to fetch reviews");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    return { error: (error instanceof Error) ? error.message : "An unknown error occurred" };
+  }
+}

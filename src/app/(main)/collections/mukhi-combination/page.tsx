@@ -8,17 +8,21 @@ const Page: React.FC = () => {
   const { setProducts, products } = useProductStore();
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchBraceletProducts = async () => {
       try {
         const response = await axios.get<Product[]>("http://localhost:3000/api/products/getall");
-        setProducts(response.data);
-        console.log(response.data.length);
+        
+        // Filter products by "Bracelets" category
+        const filteredProducts = response.data.filter(product => product.category.includes("Combination"));
+
+        setProducts(filteredProducts);
+        console.log(`Number of products in category "Bracelets": ${filteredProducts.length}`);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
 
-    fetchProducts();
+    fetchBraceletProducts();
   }, [setProducts]);
 
   return (

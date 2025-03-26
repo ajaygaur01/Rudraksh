@@ -94,7 +94,7 @@ model ProductDetails {
   category    String[]
   cartItems   CartItem[]
   orderItems  OrderItem[]
-   reviews     Review[]    // Relation to reviews
+  reviews     Review[]    // Relation to reviews
 }
 model Review {
   id          String      @id @default(uuid())

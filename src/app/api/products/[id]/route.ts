@@ -8,7 +8,6 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Direct destructuring instead of using context.params
     const { id } = params;
 
     if (!id) {
@@ -17,6 +16,13 @@ export async function GET(
 
     const product = await prisma.productDetails.findUnique({
       where: { id },
+      include: {
+        reviews: {
+          include: {
+            user: true, // Include user details for the reviewer (optional)
+          },
+        },
+      },
     });
 
     if (!product) {

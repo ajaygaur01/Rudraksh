@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
     // ✅ Fetch Cart with Items
     const cart = await prisma.cart.findFirst({
-      where: { userId:prisma.cart.UserId },
+      where: { userId: prisma.cart.userId },
       include: {
         items: {
           include: {
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
 
   } catch (error) {
     console.error("❌ Server Error:", error);
-    return NextResponse.json({ error: "Internal Server Error", details: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error", details: (error as Error).message }, { status: 500 });
   } finally {
     await prisma.$disconnect();
   }

@@ -218,7 +218,7 @@ const Cart = () => {
           <ShoppingBag className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
           <h1 className="text-2xl font-semibold mb-2">Your cart is empty</h1>
           <p className="text-muted-foreground mb-6">Looks like you haven&apos;t added any items to your cart yet.</p>
-          <Link href="/products">
+          <Link href="/">
             <Button>Continue Shopping</Button>
           </Link>
         </div>

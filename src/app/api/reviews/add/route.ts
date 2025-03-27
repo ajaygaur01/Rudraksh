@@ -8,7 +8,8 @@ export async function POST(req: NextRequest) {
     console.log("🔹 API /api/reviews/add called");
 
     // Get userId from the header
-    const userId = req.headers.get("Authorization");
+    const userId = req.headers.get("x-user-id");
+
     console.log("✅ Extracted User ID:", userId || "No userId found in headers");
 
     if (!userId) {

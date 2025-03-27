@@ -54,21 +54,22 @@ model User {
 }
 
 model UserDetails {
-  id               String    @id @default(uuid())
+  id               String     @id @default(uuid())
   name             String
-  email            String?   @unique
+  email            String?    @unique
   password         String?
   role             Boolean
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  userId           String    @unique
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  userId           String     @unique
   resetToken       String?
   resetTokenExpiry DateTime?
   addresses        Address[]
   cart             Cart?
   orders           Order[]
-  user             User      @relation("UserToUserDetails", fields: [userId], references: [id])
-    reviews          Review[]  // Relation to reviews
+  user             User       @relation("UserToUserDetails", fields: [userId], references: [id])
+  reviews          Review[] // Relation to reviews
+  wishlistItems    Wishlist[] // Add relation to Wishlist
 }
 
 model Address {
@@ -94,20 +95,32 @@ model ProductDetails {
   category    String[]
   cartItems   CartItem[]
   orderItems  OrderItem[]
-  reviews     Review[]    // Relation to reviews
+  reviews     Review[] // Relation to reviews
+  wishlist    Wishlist[]
 }
+
 model Review {
-  id          String      @id @default(uuid())
+  id          String         @id @default(uuid())
   productId   String
   userId      String
   rating      Int
   description String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
   product     ProductDetails @relation(fields: [productId], references: [id])
-  user        UserDetails @relation(fields: [userId], references: [id])
+  user        UserDetails    @relation(fields: [userId], references: [id])
 }
 
+model Wishlist {
+  id        String         @id @default(uuid())
+  userId    String
+  productId String
+  createdAt DateTime       @default(now())
+  user      UserDetails    @relation(fields: [userId], references: [id]) // Relation to UserDetails
+  product   ProductDetails @relation(fields: [productId], references: [id]) // Relation to ProductDetails
+
+  @@unique([userId, productId]) // Ensure a product can only be added once to a user's wishlist
+}
 
 model Cart {
   id     String      @id @default(uuid())

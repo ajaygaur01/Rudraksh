@@ -1,18 +1,17 @@
 import { create } from "zustand";
 
-
 interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  createdAt: string;
-  updatedAt: string;
-  image: string[];
-  category: string[];
-  rating: number;
-  isConsecrated: boolean;
+  id: string
+  name: string
+  description: string
+  price: number
+  stock: number
+  createdAt: string
+  updatedAt: string
+  image: string[]
+  category: string[]
+  rating: number
+  isConsecrated: boolean
 }
 
 interface ProductStore {

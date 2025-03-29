@@ -1,6 +1,7 @@
 
 import BlogCarousel from "@/components/Blog";
 import Caraousel from "@/components/Caraousel";
+import WhatsAppButton from "@/components/ChatWithUs";
 import CollectionShowcase from "@/components/CollectionShowcase";
 import FAQ from "@/components/Faq";
 import Footer from "@/components/Footer";
@@ -24,6 +25,7 @@ export default function Home() {
       <BlogCarousel/>
       <TestimonialsSection/>
       <FAQ/>
+      <WhatsAppButton/>
       <Footer/>
     </div>
   );

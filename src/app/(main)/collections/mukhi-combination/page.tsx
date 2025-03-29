@@ -1,11 +1,12 @@
 "use client";
 import ProductListing from "@/components/ProductListing";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useProductStore } from "@/store/productStore"; // Adjust the path as needed
 
 const Page: React.FC = () => {
-  const { setProducts, products } = useProductStore();
+  const { setProducts } = useProductStore();
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const fetchBraceletProducts = async () => {
@@ -14,8 +15,8 @@ const Page: React.FC = () => {
         
         // Filter products by "Bracelets" category
         const filteredProducts = response.data.filter(product => product.category.includes("Combination"));
-
-        setProducts(filteredProducts);
+        setProducts(response.data)
+        setFilteredProducts(filteredProducts);
         console.log(`Number of products in category "Bracelets": ${filteredProducts.length}`);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -27,7 +28,7 @@ const Page: React.FC = () => {
 
   return (
     <main className="w-full px-8 py-8 bg-white">
-      <ProductListing products={products} />
+      <ProductListing products={filteredProducts} />
     </main>
   );
 };

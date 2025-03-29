@@ -11,6 +11,9 @@ import { handleAddToCart } from "@/utils/api";
 import Cookie from "js-cookie";
 import useCurrencyStore from "@/store/currencyStore";
 import ProductReviews from "@/components/ProductReviews";
+import { useProductStore } from "@/store/productStore";
+import RudrakshaCollection from "@/components/RudrakhsaCollection";
+import RudrakshaShowCase from "@/components/RudraShowCase";
 
 const API_KEY = "273098da3cf25e72a17434ae";
 
@@ -25,7 +28,7 @@ const ProductDetailPage: React.FC = () => {
   const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
   const [convertedPrice, setConvertedPrice] = useState<string | null>(null);
   const { currency } = useCurrencyStore();
-
+  const { setProducts, products : allProducts } = useProductStore(); 
   useEffect(() => {
     if (!id) return;
 
@@ -43,6 +46,24 @@ const ProductDetailPage: React.FC = () => {
 
     fetchProduct();
   }, [id]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get<Product[]>("http://localhost:3000/api/products/getall");
+        console.log("Fetched products:", response.data);
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+  
+    console.log("Checking conditions:", product?.category, allProducts);
+  
+    if (product?.category && allProducts?.length === 0) {
+      fetchProducts();
+    }
+  }, [allProducts, product, setProducts]);
 
    useEffect(() => {
       const convertCurrency = async () => {
@@ -196,7 +217,13 @@ const ProductDetailPage: React.FC = () => {
                 <span className="text-sm text-gray-600">
                   {product?.rating?.toFixed(1)} Reviews {}
                 </span>
-                <button className="text-sm text-primary underline">
+                <button className="text-sm text-primary underline" onClick={() => {
+                  const reviews = document.getElementById('reviews');
+                  if (reviews) {
+                    const topOffset = reviews.getBoundingClientRect().top + window.scrollY - 100; // Adjust offset if needed
+                    window.scrollTo({ top: topOffset, behavior: 'smooth' });
+                  }
+                }}>
                   Write a Review
                 </button>
               </div>
@@ -295,7 +322,7 @@ const ProductDetailPage: React.FC = () => {
             <h2 className="text-xl font-bold">Product Details</h2>
             <Separator />
             
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               {product.isConsecrated && (
                 <div className="space-y-2">
                   <p className="font-medium">Dimensions</p>
@@ -308,7 +335,7 @@ const ProductDetailPage: React.FC = () => {
                   </ul>
                 </div>
               )}
-            </div>
+            </div> */}
             
             <h2 className="text-xl font-bold pt-4">Product Description</h2>
             <Separator />
@@ -319,7 +346,13 @@ const ProductDetailPage: React.FC = () => {
               </p>
             </div>
           </div>
-
+          <div className="w-full mt-12">
+          <RudrakshaShowCase item={allProducts.filter((p) => 
+            Array.isArray(product.category) 
+              ? product.category.some((cat) => p.category.includes(cat)) 
+              : p.category.includes(product.category)
+          )}/>
+          </div>
           <div id="reviews" className="mt-12 space-y-6">
               <ProductReviews productId={product.id} />
           </div>

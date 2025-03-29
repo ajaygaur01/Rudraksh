@@ -6,10 +6,20 @@ import ProductItem from "./ProductItem";
 import { rudrakshaItems } from "@/utils/constants";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import ProductCard from "./ListingCard";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const RudrakshaShowCase = () => {
+const RudrakshaShowCase = (
+  {
+    title = "Holy & Powerful Rudraksha",
+    subHeading = "Explore the Divine Energy of Rudraksha Beads",
+    item = null
+  } : 
+  { title ?: string;
+    subHeading ?: string;
+    item ?: null | Product[]
+  }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const subHeadingRef = useRef<HTMLAnchorElement>(null);
@@ -118,7 +128,7 @@ const RudrakshaShowCase = () => {
               ref={headingRef}
               className={`${popping.className} text-2xl sm:text-3xl md:text-4xl font-medium md:font-normal text-stone-800`}
             >
-              Holy & Powerful Rudraksha
+              {title}
             </h1>
             <div>
               <a
@@ -126,7 +136,7 @@ const RudrakshaShowCase = () => {
                 href="#"
                 className="group text-amber-600 hover:text-amber-700  mt-1 inline-block"
               >
-                Explore Our Most Sacred Rudraksha Selections
+                {subHeading}
                 
               </a>
               
@@ -172,9 +182,18 @@ const RudrakshaShowCase = () => {
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             <div className="flex gap-4 md:gap-6">
-              {rudrakshaItems.map((item) => (
+              
+              { 
+                item ? 
+                item.map((item) => (
+                  <div key={item.id} className="w-[300px] md:w-[350px] lg:w-[400px]">
+                    <ProductCard key={item.id} product={item} gridView={true} />
+                  </div>
+                )) :
+                rudrakshaItems.map((item) => (
                 <ProductItem key={item.id} item={item} />
-              ))}
+                ))
+              }
             </div>
           </div>
 

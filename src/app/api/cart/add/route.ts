@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     // First, find the UserDetails record where userId matches the JWT token ID
     const userDetails = await prisma.userDetails.findFirst({ 
-      where: { id: userId } 
+      where: { id:prisma.userDetails.id } 
     });
     
     if (!userDetails) {

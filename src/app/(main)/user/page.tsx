@@ -11,7 +11,10 @@ const UserPage = () => {
     async function loadUser() {
       const userData = await fetchUserDetails();
       if (userData) setUser(userData);
-      else setError("Failed to load user details");
+      else {
+        console.log(error)
+        setError("Failed to load user details");
+      }
     }
     loadUser();
   }, []);

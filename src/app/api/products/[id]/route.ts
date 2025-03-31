@@ -1,25 +1,26 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+// Change the type definition to match Next.js expected structure
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id : string }> }
 ) {
   try {
-    const { id } = params;
+    const {id : productId } = await params
 
-    if (!id) {
+    if (!productId) {
       return NextResponse.json({ error: "Missing product ID" }, { status: 400 });
     }
 
     const product = await prisma.productDetails.findUnique({
-      where: { id },
+      where: { id: productId },
       include: {
         reviews: {
           include: {
-            user: true, // Include user details for the reviewer (optional)
+            user: true,
           },
         },
       },

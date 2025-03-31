@@ -15,7 +15,7 @@ export function getUserIdFromToken(): string | null {
   }
 }
 
-export async function fetchUserDetails() : Promise<FetchUser | null> {
+export async function fetchUserDetails() : Promise<User | null> {
   try {
     const response = await fetch("/api/userdetails/get", {
       method: "GET",

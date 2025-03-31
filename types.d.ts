@@ -45,18 +45,18 @@ declare interface CollectionItems {
 }
 
 interface Product {
-    [x: string]: { rating: number; }[];
-    id: string
-    name: string
-    description: string
-    price: number
-    stock: number
-    createdAt: string
-    updatedAt: string
-    image: string[]
-    category: string[]
-    rating: number
-    isConsecrated: boolean
+  id: string
+  name: string
+  description: string
+  price: number
+  stock: number
+  createdAt: string
+  updatedAt: string
+  image: string[]
+  category: string[]
+  rating: number
+  isConsecrated: boolean
+  reviews: { rating: number }[]
 }
 
 declare interface ProductShow    {

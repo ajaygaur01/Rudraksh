@@ -31,6 +31,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
+    // Check if the product is already in the user's wishlist
+    const existingWishlistItem = await prisma.wishlist.findUnique({
+      where: {
+        userId_productId: { userId, productId }, // Uses the unique constraint
+      },
+    });
+
+    if (existingWishlistItem) {
+      return NextResponse.json({ error: "Product already in wishlist" }, { status: 409 });
+    }
+
     // Add to wishlist
     const wishlistItem = await prisma.wishlist.create({
       data: {
@@ -41,11 +52,9 @@ export async function POST(req: NextRequest) {
 
     console.log("✅ Product added to wishlist with ID:", wishlistItem.id);
 
-    return NextResponse.json({ message: "Product added to wishlist", wishlistItem }, { status: 200 });
-  } catch (error: unknown) {
-    console.error("❌ Server Error:", error);
+    return NextResponse.json({ message: "Product added to wishlist", wishlistItem }, { status: 201 });
+  } catch (error) {
+    console.error("❌ Server Error:", (error as Error).message);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }

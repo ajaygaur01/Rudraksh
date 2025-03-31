@@ -12,6 +12,7 @@ interface Product {
   category: string[]
   rating: number
   isConsecrated: boolean
+  reviews: { rating: number }[]
 }
 
 interface ProductStore {

@@ -17,14 +17,13 @@ const Cart = () => {
   const [updating, setUpdating] = useState<boolean>(false)
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({})
 
-  //const userId = "cm84r621l0000n4z81e4ldm2s" // In a real app, get this from auth
 
   useEffect(() => {
     fetchCart()
   }, [])
 
   useEffect(() => {
-    if (cart && cart.cart.length > 0) {
+    if (cart && cart.cart.items.length > 0) {
       const initialQuantities: { [key: string]: number } = {}
       cart.cart.items.forEach((item) => {
         initialQuantities[item.id] = item.quantity
@@ -70,7 +69,6 @@ const Cart = () => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "x-user-id": userId,
         },
         body: JSON.stringify({ quantity }),
       })
@@ -209,8 +207,8 @@ const Cart = () => {
       </div>
     )
   }
-  console.log(cart?.cart?.length)
-  if (!cart || cart?.cart?.length === 0) {
+  console.log(cart?.cart?.items.length)
+  if (!cart || cart?.cart?.items.length === 0) {
     console.log("cart is empty")
     return (
       <div className="container mx-auto px-4 py-16 text-center">

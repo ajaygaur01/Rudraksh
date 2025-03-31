@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
 
     // ✅ Fetch Cart with Items
     const cart = await prisma.cart.findFirst({
-      where: { userId: prisma.cart.userId },
+      where: { userId: userId },
       include: {
         items: {
           include: {

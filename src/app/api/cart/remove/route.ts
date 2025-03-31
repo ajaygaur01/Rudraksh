@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 const prisma = new PrismaClient();
 
@@ -20,7 +21,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     // 🔹 Find UserDetails (Corrected)
-    const userDetails = await prisma.userDetails.findFirst({ where: { userId : prisma.userDetails.id} });
+    const userDetails = await prisma.userDetails.findFirst({ where: { userId: userId } });
 
     if (!userDetails) {
       console.log("❌ No UserDetails found for userId:", userId);
@@ -42,7 +43,7 @@ export async function DELETE(req: NextRequest) {
 
     // 🔹 Check if the item exists in the cart
     const cartItem = await prisma.cartItem.findFirst({
-      where: { cartId:prisma.cartItem.CartId, productId:prisma.cartItem.productId },
+      where: { cartId: cart.id, productId: productId },
     });
 
     if (!cartItem) {
@@ -76,7 +77,12 @@ export async function DELETE(req: NextRequest) {
       { status: 200 }
     );
 
-  } catch (error: any) {
+  } 
+  catch (error: unknown) {
+    console.error("❌ Server Error:", error instanceof Error ? error.message : error);
+
+    // Import PrismaClientKnownRequestError at the top of the file
+    if (error instanceof PrismaClientKnownRequestError && error.code === "P2003") {
     console.error("❌ Server Error:", error);
 
     if (error.code === "P2003") {
@@ -84,7 +90,9 @@ export async function DELETE(req: NextRequest) {
     }
 
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
-  } finally {
+    } 
+  }
+  finally {
     await prisma.$disconnect();
   }
 }

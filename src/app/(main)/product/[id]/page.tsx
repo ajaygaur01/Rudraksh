@@ -12,7 +12,6 @@ import Cookie from "js-cookie";
 import useCurrencyStore from "@/store/currencyStore";
 import ProductReviews from "@/components/ProductReviews";
 import { useProductStore } from "@/store/productStore";
-import RudrakshaCollection from "@/components/RudrakhsaCollection";
 import RudrakshaShowCase from "@/components/RudraShowCase";
 
 const API_KEY = "273098da3cf25e72a17434ae";

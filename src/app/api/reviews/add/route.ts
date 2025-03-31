@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 
     // Check if the user exists
     const userDetails = await prisma.userDetails.findFirst({
-      where: { id: prisma.userDetails.id },
+      where: { id: userId },
     });
     if (!userDetails) {
       console.log("❌ No UserDetails found for userId:", userId);

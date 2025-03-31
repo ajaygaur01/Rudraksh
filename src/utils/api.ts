@@ -40,39 +40,39 @@ export async function fetchUserDetails() : Promise<FetchUser | null> {
 }
 
 export async function addToCart(productId: string, quantity: number) {
-  // const token = document.cookie
-  //   .split("; ")
-  //   .find(row => row.startsWith("auth_token="))
-  //   ?.split("=")[1];
+  const token = document.cookie
+    .split("; ")
+    .find(row => row.startsWith("auth_token="))
+    ?.split("=")[1];
 
-  // console.log("---cookie---", token);
+  console.log("---cookie---", token);
 
-  // let userId = null;
-  // if (token) {
-  //   try {
-  //     const payload = JSON.parse(atob(token.split(".")[1])); // Decode JWT
-  //     userId = payload.id || payload.userId;
-  //   } catch (error) {
-  //     console.error("Error decoding JWT:", error);
-  //   }
-  // }
+  let userId = null;
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1])); // Decode JWT
+      userId = payload.id || payload.userId;
+    } catch (error) {
+      console.error("Error decoding JWT:", error);
+    }
+  }
 
-  // console.log("---userId---", userId);
+  console.log("---userId---", userId);
 
-  // if (!userId) {
-  //   console.error("No user ID found in token.");
-  //   return { error: "User not authenticated" };
-  // }
+  if (!userId) {
+    console.error("No user ID found in token.");
+    return { error: "User not authenticated" };
+  }
 
   try {
     const response = await fetch('/api/cart/add', {
       method: 'POST',
       headers: {
-        //'Content-Type': 'application/json',
-        //"Authorization": `Bearer ${token}`
+        'Content-Type': 'application/json',
+        "Authorization": `Bearer ${token}`
       },
       credentials: "include",
-    //  body: JSON.stringify({ userId, productId, quantity }),
+     body: JSON.stringify({ userId, productId, quantity }),
     });
 
     const data = await response.json();

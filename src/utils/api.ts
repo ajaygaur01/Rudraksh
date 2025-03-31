@@ -72,7 +72,7 @@ export async function addToCart(productId: string, quantity: number) {
         "Authorization": `Bearer ${token}`
       },
       credentials: "include",
-      body: JSON.stringify({ userId, productId, quantity }),
+     body: JSON.stringify({ userId, productId, quantity }),
     });
 
     const data = await response.json();

@@ -6,7 +6,7 @@ export async function middleware(req: NextRequest) {
 
   // Extract token from cookies
   const token = req.cookies.get("auth_token")?.value;
-  
+  console.log(token)
   // You're using "eyJhbG..." token from a cookie named "auth_token"
   // But in your error you're showing a JWT being passed as "cookie"
 

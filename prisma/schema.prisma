@@ -142,28 +142,32 @@ model CartItem {
 
 model Order {
   id        String      @id @default(uuid())
+  orderId   String      @unique  // ✅ Ensure orderId is unique
   userId    String
-  total     Float
-  paymentId String?  // ✅ Add this field for storing Cashfree payment ID
+  total     Decimal     // ✅ Matches "total" in the API
+  paymentId String?     // ✅ To be updated when payment is verified
   status    OrderStatus @default(PENDING)
   createdAt DateTime    @default(now())
   user      UserDetails @relation(fields: [userId], references: [id])
   items     OrderItem[]
+
+  @@index([orderId])  // ✅ Optimized for searching by orderId
 }
+
 
 model OrderItem {
   id        String         @id @default(uuid())
   orderId   String
   productId String
   quantity  Int
-  price     Float
+  price     Decimal        // ✅ Changed to Decimal
   order     Order          @relation(fields: [orderId], references: [id])
   product   ProductDetails @relation(fields: [productId], references: [id])
 }
 
 enum OrderStatus {
   PENDING
-  PAID    // ✅ Add PAID status
+  PAID
   SHIPPED
   DELIVERED
   CANCELLED

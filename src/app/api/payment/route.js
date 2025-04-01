@@ -2,9 +2,7 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { Cashfree } from "cashfree-pg";
 import crypto from "crypto";
-import dotenv from "dotenv";
 
-dotenv.config();
 const prisma = new PrismaClient();
 
 Cashfree.XClientId = process.env.CLIENT_ID;

@@ -35,7 +35,7 @@ export async function POST(req) {
     }
 
     let total;
-    let cartItems = [];
+    let cartItems = [];``
 
     // If amount is provided directly, use it (for direct checkout)
     if (amount) {

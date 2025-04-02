@@ -149,7 +149,7 @@ model Order {
   status    OrderStatus @default(PENDING)
   createdAt DateTime    @default(now())
   user      UserDetails @relation(fields: [userId], references: [id])
-  items     OrderItem[]
+  items     OrderItem[] 
 
   @@index([orderId])  // ✅ Optimized for searching by orderId
 }

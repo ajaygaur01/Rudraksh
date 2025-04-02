@@ -92,13 +92,19 @@ export async function POST(req) {
     }
 
     // Create order data object
-    const orderData = {
+    const orderData: {
+      orderId: string;
+      userId: string;
+      total: number;
+      status: string;
+      items?: { create: { productId: string; quantity: number; price: number }[] };
+    } = {
       orderId,
       userId,
       total,
       status: "PENDING",
     };
-
+    
     // Only add items if we have cart items
     if (cartItems.length > 0) {
       orderData.items = {
@@ -109,12 +115,23 @@ export async function POST(req) {
         })),
       };
     }
-
-    // Save order in database
+    
+    // Now, create order with the correct type
     const order = await prisma.order.create({
-      data: orderData
+      data: {
+        orderId,
+        userId, // ✅ Now explicitly setting userId as string
+        total,
+        status: "PENDING",
+        items: {
+          create: cartItems.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            price: item.product.price,
+          })),
+        },
+      },
     });
-
     // Send order details to admin email
     await sendOrderEmail(order, cartItems);
 

@@ -1,6 +1,6 @@
 "use client";
-
-import React, { useState } from "react";
+import { useState } from "react";
+import { cashfree } from "@/utils/cash";
 
 function Checkout() {
   const [customerInfo, setCustomerInfo] = useState({
@@ -20,17 +20,34 @@ function Checkout() {
     }));
   };
 
+  const handleRedirect = (sessionId : string) => {
+      const checkoutOptions = {
+        paymentSessionId: sessionId,
+        returnUrl:
+          "https://localhost:3000/checkout/success",
+      };
+      cashfree.checkout(checkoutOptions).then(function (result) {
+        if (result.error) {
+          alert(result.error.message);
+        }
+        if (result.redirect) {
+          console.log("Redirection");
+        }
+      });
+  }
+
   const handleCheckout = async () => {
     const { customer_name, customer_email, customer_phone, amount } = customerInfo;
 
+    // Validation
     if (!customer_name || !customer_email || !customer_phone || !amount) {
-      setError("Please fill all the fields.");
+      setError("Please fill all fields.");
       return;
     }
 
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      setError("Please enter a valid amount.");
+      setError("Amount must be > 0.");
       return;
     }
 
@@ -42,7 +59,8 @@ function Checkout() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: "9921a34d-1115-479c-8acb-3d6177d0c910",
+          userId : '7908861e-a9e5-448b-9e3e-20e76d973df1',
+          orderId: `order_${Math.random().toString(36).substring(2, 10)}`,
           customer_name,
           customer_email,
           customer_phone,
@@ -52,93 +70,94 @@ function Checkout() {
 
       const data = await response.json();
       
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to initiate payment");
-      }
+      if (!response.ok) throw new Error(data.message || "Payment failed");
 
       if (data.payment_session_id) {
-        // Construct the correct Cashfree checkout URL with sessionId
-        const checkoutUrl = `https://sandbox.cashfree.com/pg/view/checkout?session_id=${data.payment_session_id}`;
-        console.log("Redirecting to:", checkoutUrl);
-        window.location.href = checkoutUrl;
+        // Use the correct format for Cashfree redirect URL
+        // For sandbox:
+        const paymentUrl = `https://sandbox.cashfree.com/pg/orders/${data.payment_session_id}`;
+        console.log("Redirecting to:", paymentUrl);
+        window.location.href = paymentUrl;
       } else {
-        throw new Error("Invalid payment session ID. Please try again.");
+        throw new Error("Missing payment session ID");
       }
 
     } catch (error) {
-      console.error("Payment initiation failed", error);
-      setError(error.message || "Error initiating payment. Please try again.");
+      console.error("Payment error:", error);
+      setError(error.message || "Payment failed. Try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded shadow-md">
-      <h2 className="text-2xl font-bold mb-6">Checkout</h2>
-      {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>}
-      <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
-        <div>
-          <label className="block mb-1">
-            Name:
-            <input
-              type="text"
-              name="customer_name"
-              value={customerInfo.customer_name}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </label>
-        </div>
-        <div>
-          <label className="block mb-1">
-            Email:
-            <input
-              type="email"
-              name="customer_email"
-              value={customerInfo.customer_email}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </label>
-        </div>
-        <div>
-          <label className="block mb-1">
-            Phone:
-            <input
-              type="tel"
-              name="customer_phone"
-              value={customerInfo.customer_phone}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </label>
-        </div>
-        <div>
-          <label className="block mb-1">
-            Amount (₹):
-            <input
-              type="number"
-              name="amount"
-              value={customerInfo.amount}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
-          </label>
-        </div>
-        <button
-          type="button"
-          onClick={handleCheckout}
-          disabled={loading}
-          className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-300"
-        >
-          {loading ? "Processing..." : "Proceed to Payment"}
-        </button>
-      </form>
+    <div className="w-full min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="max-w-md mx-auto p-6 rounded shadow-md bg-white">
+        <h2 className="text-2xl font-bold mb-6">Checkout</h2>
+        {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>}
+        <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+          <div>
+            <label className="block mb-1">
+              Name:
+              <input
+                type="text"
+                name="customer_name"
+                value={customerInfo.customer_name}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </label>
+          </div>
+          <div>
+            <label className="block mb-1">
+              Email:
+              <input
+                type="email"
+                name="customer_email"
+                value={customerInfo.customer_email}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </label>
+          </div>
+          <div>
+            <label className="block mb-1">
+              Phone:
+              <input
+                type="tel"
+                name="customer_phone"
+                value={customerInfo.customer_phone}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </label>
+          </div>
+          <div>
+            <label className="block mb-1">
+              Amount (₹):
+              <input
+                type="number"
+                name="amount"
+                value={customerInfo.amount}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+                required
+              />
+            </label>
+          </div>
+          <button
+            type="button"
+            onClick={handleCheckout}
+            disabled={loading}
+            className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-300"
+          >
+            {loading ? "Processing..." : "Proceed to Payment"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

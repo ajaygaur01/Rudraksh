@@ -57,14 +57,14 @@ function Checkout() {
       }
 
       if (data.payment_session_id) {
-        // Use the correct format for Cashfree redirect URL
-        // For sandbox:
-        const paymentUrl = `https://sandbox.cashfree.com/pg/orders/${data.payment_session_id}`;
-        console.log("Redirecting to:", paymentUrl);
-        window.location.href = paymentUrl;
+        // Construct the correct Cashfree checkout URL with sessionId
+        const checkoutUrl = `https://sandbox.cashfree.com/pg/view/checkout?session_id=${data.payment_session_id}`;
+        console.log("Redirecting to:", checkoutUrl);
+        window.location.href = checkoutUrl;
       } else {
         throw new Error("Invalid payment session ID. Please try again.");
       }
+
     } catch (error) {
       console.error("Payment initiation failed", error);
       setError(error.message || "Error initiating payment. Please try again.");

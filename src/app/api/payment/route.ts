@@ -1,6 +1,6 @@
+// payment.js API endpoint
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { Cashfree } from "cashfree-pg";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 
@@ -14,14 +14,9 @@ if (!CLIENT_ID || !CLIENT_SECRET) {
   console.error("Cashfree credentials not found in environment variables");
 }
 
-// Set up Cashfree configuration
-Cashfree.XClientId = CLIENT_ID;
-Cashfree.XClientSecret = CLIENT_SECRET;
-Cashfree.XEnvironment = Cashfree.Environment.SANDBOX;
-
 // Generate unique order ID
 function generateOrderId() {
-  return crypto.randomUUID().replace(/-/g, "").substring(0, 12); // Fixed deprecated substr
+  return crypto.randomUUID().replace(/-/g, "").substring(0, 12);
 }
 
 // 📌 Payment API
@@ -35,12 +30,11 @@ export async function POST(req) {
     }
 
     let total;
-    let cartItems = [];``
+    let cartItems = [];
 
     // If amount is provided directly, use it (for direct checkout)
     if (amount) {
       total = parseFloat(amount);
-      // We don't create order items for direct payments to avoid foreign key issues
     } else {
       // Otherwise fetch from cart (for cart checkout)
       const cart = await prisma.cart.findUnique({
@@ -57,48 +51,11 @@ export async function POST(req) {
       cartItems = cart.items;
     }
 
-    // Create order in Cashfree
+    // Create order in database first
     const orderId = generateOrderId();
-    const request = {
-      order_amount: total,
-      order_currency: "INR",
-      order_id: orderId,
-      customer_details: {
-        customer_id: userId,
-        customer_phone,
-        customer_name,
-        customer_email,
-      },
-    };
     
-    // Use fetch with specific headers as shown in the documentation
-    const cashfreeResponse = await fetch("https://sandbox.cashfree.com/pg/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-version": "2023-08-01",
-        "x-client-id": CLIENT_ID,
-        "x-client-secret": CLIENT_SECRET
-      },
-      body: JSON.stringify(request)
-    });
-    
-    const response = await cashfreeResponse.json();
-    console.log("Cashfree Response:", response);
-    
-    if (!cashfreeResponse.ok) {
-      console.error("Cashfree error:", response);
-      return NextResponse.json({ error: response.message || "Payment gateway error" }, { status: cashfreeResponse.status });
-    }
-
     // Create order data object
-    const orderData: {
-      orderId: string;
-      userId: string;
-      total: number;
-      status: string;
-      items?: { create: { productId: string; quantity: number; price: number }[] };
-    } = {
+    const orderData = {
       orderId,
       userId,
       total,
@@ -116,30 +73,69 @@ export async function POST(req) {
       };
     }
     
-    // Now, create order with the correct type
+    // Create order in database
     const order = await prisma.order.create({
-      data: {
-        orderId,
-        userId, // ✅ Now explicitly setting userId as string
-        total,
-        status: "PENDING",
-        items: {
-          create: cartItems.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.product.price,
-          })),
-        },
-      },
+      data: orderData
     });
-    // Send order details to admin email
-    await sendOrderEmail(order, cartItems);
 
-    // Return payment session ID and order ID
+    // Email sending is optional
+    try {
+      await sendOrderEmail(order, cartItems);
+    } catch (emailError) {
+      console.error("Email sending failed, but continuing payment process:", emailError);
+    }
+
+    // Create Cashfree order with the correct API format
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    
+    const cashfreeOrderRequest = {
+      order_amount: total,
+      order_currency: "INR",
+      order_id: orderId,
+      customer_details: {
+        customer_id: userId,
+        customer_phone,
+        customer_email,
+        customer_name,
+      },
+      order_meta: {
+        return_url: `${baseUrl}/payment/status?order_id={order_id}`, 
+      },
+    };
+    
+    // Call Cashfree API
+    const createOrderResponse = await fetch("https://sandbox.cashfree.com/pg/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-version": "2023-08-01",
+        "x-client-id": CLIENT_ID,
+        "x-client-secret": CLIENT_SECRET
+      },
+      body: JSON.stringify(cashfreeOrderRequest)
+    });
+    
+    const cashfreeResponse = await createOrderResponse.json();
+    console.log("Full Cashfree Response:", JSON.stringify(cashfreeResponse, null, 2));
+    
+    if (!createOrderResponse.ok) {
+      console.error("Cashfree error:", cashfreeResponse);
+      return NextResponse.json({ error: cashfreeResponse.message || "Payment gateway error" }, { status: createOrderResponse.status });
+    }
+
+    // Check if payment_session_id exists in the response
+    if (!cashfreeResponse.payment_session_id) {
+      console.error("Missing payment_session_id in Cashfree response:", cashfreeResponse);
+      return NextResponse.json({ error: "Invalid response from payment gateway" }, { status: 500 });
+    }
+
+    // Return the payment session ID (not a direct link)
     return NextResponse.json({ 
-      payment_session_id: response.payment_session_id,
+      payment_session_id: cashfreeResponse.payment_session_id,
+      cf_order_id: cashfreeResponse.cf_order_id,
       order_id: orderId 
     });
+    
   } catch (error) {
     console.error("Payment Error:", error);
     return NextResponse.json({ error: "Payment initiation failed" }, { status: 500 });
@@ -148,6 +144,11 @@ export async function POST(req) {
 
 // 📌 Email Sending Function
 async function sendOrderEmail(order, items) {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn("Email credentials not configured, skipping email notification");
+    return;
+  }
+
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -156,9 +157,8 @@ async function sendOrderEmail(order, items) {
     },
   });
 
-  // Create email content based on whether there are items or not
   let itemsList = "";
-  if (items.length > 0) {
+  if (items && items.length > 0) {
     itemsList = `
       <h3>Items:</h3>
       <ul>
@@ -178,7 +178,7 @@ async function sendOrderEmail(order, items) {
 
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
-    to: "admin@example.com", // 📌 Change this to your email
+    to: process.env.ADMIN_EMAIL || "admin@example.com",
     subject: "New Order Received",
     html: emailBody,
   });

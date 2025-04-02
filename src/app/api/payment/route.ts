@@ -24,7 +24,6 @@ function generateOrderId() {
   return crypto.randomUUID().replace(/-/g, "").substring(0, 12); // Fixed deprecated substr
 }
 
-// 📌 Payment API
 export async function POST(req) {
   try {
     console.log("Using credentials - ID:", CLIENT_ID?.substring(0, 4) + "***", "Secret exists:", !!CLIENT_SECRET);
@@ -133,7 +132,7 @@ export async function POST(req) {
       },
     });
     // Send order details to admin email
-    await sendOrderEmail(order, cartItems);
+    // await sendOrderEmail(order, cartItems);
 
     // Return payment session ID and order ID
     return NextResponse.json({ 
@@ -147,6 +146,7 @@ export async function POST(req) {
 }
 
 // 📌 Email Sending Function
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function sendOrderEmail(order, items) {
   const transporter = nodemailer.createTransport({
     service: "gmail",

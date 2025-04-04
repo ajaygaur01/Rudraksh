@@ -20,8 +20,14 @@ export async function POST(req: NextRequest) {
     }
 
     // First, find the UserDetails record where userId matches the JWT token ID
+    const user = await prisma.userDetails.findFirst()
+    const userkiid = user.id
+    console.log("-------------------" , userkiid)
+
+
+
     const userDetails = await prisma.userDetails.findFirst({ 
-      where: { id:prisma.userDetails.id } 
+      where: { id: userkiid} 
     });
     
     if (!userDetails) {

@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { Cashfree } from "cashfree-pg";
-import dotenv from "dotenv";
 
-dotenv.config();
 const prisma = new PrismaClient();
 
 export async function POST(req) {

@@ -100,23 +100,38 @@ export const handleAddToCart = async (productId : string,quantity : number) => {
 
 export const removeCartItem = async (productId: string) => {
   try {
-    // Retrieve token from cookies
     const token = document.cookie
-      .split("; ")
-      .find(row => row.startsWith("auth_token="))
-      ?.split("=")[1];
+    .split("; ")
+    .find(row => row.startsWith("auth_token="))
+    ?.split("=")[1];
 
-    if (!token) {
-      throw new Error("Unauthorized: No token found");
+  console.log("---cookie---", token);
+
+  let userId = null;
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1])); // Decode JWT
+      userId = payload.id || payload.userId;
+    } catch (error) {
+      console.error("Error decoding JWT:", error);
     }
+  }
 
+  console.log("---userId---", userId);
+
+  if (!userId) {
+    console.error("No user ID found in token.");
+    return { error: "User not authenticated" };
+  }
     const response = await fetch("/api/cart/remove", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`, // ✅ Send JWT token for authentication
+        
       },
-      body: JSON.stringify({productId }),
+      body: JSON.stringify({productId , userId}),
+      credentials :"include"
     });
 
     const data = await response.json();

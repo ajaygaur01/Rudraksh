@@ -59,7 +59,7 @@ function Checkout() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId : '7908861e-a9e5-448b-9e3e-20e76d973df1',
+          userId : '9921a34d-1115-479c-8acb-3d6177d0c910',
           orderId: `order_${Math.random().toString(36).substring(2, 10)}`,
           customer_name,
           customer_email,
@@ -73,15 +73,10 @@ function Checkout() {
       if (!response.ok) throw new Error(data.message || "Payment failed");
 
       if (data.payment_session_id) {
-        // Use the correct format for Cashfree redirect URL
-        // For sandbox:
-        const paymentUrl = `https://sandbox.cashfree.com/pg/orders/${data.payment_session_id}`;
-        console.log("Redirecting to:", paymentUrl);
-        window.location.href = paymentUrl;
+        handleRedirect(data.payment_session_id);
       } else {
         throw new Error("Missing payment session ID");
       }
-
     } catch (error) {
       console.error("Payment error:", error);
       setError(error.message || "Payment failed. Try again.");
@@ -162,4 +157,4 @@ function Checkout() {
   );
 }
 
-export default Checkout;
+export default Checkout

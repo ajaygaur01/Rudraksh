@@ -11,7 +11,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     const fetchBraceletProducts = async () => {
       try {
-        const response = await axios.get<Product[]>("http://localhost:3000/api/products/getall");
+        const response = await axios.get<Product[]>("https://rudraksh-three.vercel.app/api/products/getall");
         
         // Filter products by "Bracelets" category
         const filteredProducts = response.data.filter(product => product.category.includes("Combination"));

@@ -24,7 +24,7 @@ function Checkout() {
       const checkoutOptions = {
         paymentSessionId: sessionId,
         returnUrl:
-          "https://localhost:3000/checkout/success",
+          "https://rudraksh-three.vercel.app/checkout/success",
       };
       cashfree.checkout(checkoutOptions).then(function (result) {
         if (result.error) {

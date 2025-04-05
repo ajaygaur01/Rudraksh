@@ -118,6 +118,18 @@ interface User {
     resetTokenExpiry: Date | null;
 }
 
+interface ShippingAddress {
+  name: string
+  email: string
+  phoneNumber: string
+  address: string
+  city: string
+  state: string
+  zipCode: string
+  country: string
+}
+
+
 type FetchUser =
   | { user: User  } // Success response
   | { error: string }; // Error response

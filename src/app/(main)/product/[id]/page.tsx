@@ -49,7 +49,7 @@ const ProductDetailPage: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get<Product[]>("http://localhost:3000/api/products/getall");
+        const response = await axios.get<Product[]>("https://rudraksh-three.vercel.app/api/products/getall");
         console.log("Fetched products:", response.data);
         setProducts(response.data);
       } catch (error) {

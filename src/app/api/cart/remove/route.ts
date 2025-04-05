@@ -21,7 +21,13 @@ export async function DELETE(req: NextRequest) {
     }
 
     // 🔹 Find UserDetails (Corrected)
-    const userDetails = await prisma.userDetails.findFirst({ where: { userId: prisma.userDetails.id } });
+    const user = await prisma.userDetails.findFirst()
+    const userkiid = user.id
+    console.log("-------------------" , userkiid)
+
+
+
+    const userDetails = await prisma.userDetails.findFirst({ where: { userId: userkiid} });
 
     if (!userDetails) {
       console.log("❌ No UserDetails found for userId:", userId);

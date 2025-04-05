@@ -48,7 +48,7 @@ const Login = () => {
         console.log('Form submitted:', values);
         // Add your login logic here
         try {
-          await axios.post("http://localhost:3000/api/auth/login" , values)
+          await axios.post("https://rudraksh-three.vercel.app/api/auth/login" , values)
           console.log(values)
           alert("Registered Successfully")
           router.push("/")

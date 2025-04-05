@@ -15,10 +15,18 @@ export async function GET(req: NextRequest) {
       console.error("❌ Missing User ID in headers");
       return NextResponse.json({ error: "Unauthorized: User ID missing" }, { status: 401 });
     }
+         
+    const cartdetails = await prisma.cart.findFirst()
+    const userkiid = cartdetails.userId
+    console.log("-------------------" , userkiid)
+
+
+
+
 
     // ✅ Fetch Cart with Items
     const cart = await prisma.cart.findFirst({
-      where: { userId: prisma.cart.userId },
+      where: { userId: userkiid },
       include: {
         items: {
           include: {

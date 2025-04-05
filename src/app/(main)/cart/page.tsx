@@ -66,7 +66,7 @@ const Cart = () => {
 
     try {
       setUpdating(true)
-      const res = await fetch(`http://localhost:3000/api/cart/item/${itemId}`, {
+      const res = await fetch(`https://rudraksh-three.vercel.app/api/cart/item/${itemId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

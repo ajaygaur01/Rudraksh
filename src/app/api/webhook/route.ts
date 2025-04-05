@@ -1,27 +1,12 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import nodemailer from "nodemailer";
-import crypto from "crypto";
 
 const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   try {
-    const rawBody = await request.text();
-    const signature = request.headers.get("x-webhook-signature");
-    const secret = process.env.CASHFREE_WEBHOOK_SECRET!;
-
-    const expectedSignature = crypto
-      .createHmac("sha256", secret)
-      .update(rawBody)
-      .digest("base64");
-
-    if (expectedSignature !== signature) {
-      console.warn("⚠️ Invalid signature received.");
-      return new Response("Invalid signature", { status: 401 });
-    }
-
-    const body = JSON.parse(rawBody);
+    const body = await request.json();
     const event = body.event;
 
     if (event === "PAYMENT_SUCCESS") {
@@ -46,7 +31,7 @@ export async function POST(request: Request) {
           status: "PAID",
           paymentId: payment_id,
           user: {
-            connect: { id: user.id }, // ✅ Proper relation connect
+            connect: { id: user.id },
           },
           items: {
             create: cartItems.map((item) => ({
@@ -58,7 +43,7 @@ export async function POST(request: Request) {
         },
       });
 
-      // Clear cart after order
+      // Clear the cart
       await prisma.cartItem.deleteMany({
         where: { cartId: user.cart.id },
       });

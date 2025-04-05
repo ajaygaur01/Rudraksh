@@ -1,11 +1,23 @@
 export async function POST(request) {
-    const body = await request.json();
+    try {
+      const contentType = request.headers.get("content-type") || "";
   
-    console.log("Cashfree Webhook received:", body);
+      if (!contentType.includes("application/json")) {
+        return new Response("Invalid content type", { status: 400 });
+      }
   
-    // TODO: Verify signature (for security)
-    // TODO: Update order status in DB
+      const bodyText = await request.text();
+      if (!bodyText) {
+        return new Response("Empty body", { status: 400 });
+      }
   
-    return new Response("Webhook received", { status: 200 });
+      const body = JSON.parse(bodyText);
+      console.log("Cashfree Webhook received:", body);
+  
+      return new Response("Webhook received", { status: 200 });
+    } catch (error) {
+      console.error("Webhook error:", error);
+      return new Response("Webhook error", { status: 500 });
+    }
   }
   

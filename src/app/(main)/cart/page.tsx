@@ -8,12 +8,13 @@ import { Input } from "@/components/ui/input"
 // import { Textarea } from "@/components/ui/textarea"
 // import { toast } from "@/hooks/use-toast"
 import { handleRemoveItem as remove } from "@/utils/api"
+import { CheckoutDrawer } from "@/components/checkout"
 
 const Cart = () => {
   const [cart, setCart] = useState<CartResponse | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
-  //   const [note, setNote] = useState<string>("")
+  const [openCheckout, setOpenCheckout] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({})
 
@@ -226,7 +227,11 @@ const Cart = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
+      
       <h1 className="text-3xl font-semibold text-center mt-8 mb-8">Your Cart</h1>
+      <CheckoutDrawer isOpen={openCheckout} onClose={() => setOpenCheckout(false)} cart={cart.cart} />
+
+      {/* Cart Items Section */}
 
       <div className="bg-white rounded-lg shadow-sm border border-border">
         <div className="hidden md:grid md:grid-cols-12 text-sm font-medium text-muted-foreground p-4 border-b">
@@ -324,7 +329,7 @@ const Cart = () => {
 
           {/* Buttons */}
           <div className="space-y-3">
-            <Button className="w-full" size="lg" onClick={() => alert("Proceeding to checkout")} disabled={updating}>
+            <Button className="w-full" size="lg" onClick={() => setOpenCheckout(true)} disabled={updating}>
               Checkout
             </Button>
 

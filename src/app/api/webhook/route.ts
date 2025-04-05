@@ -1,9 +1,9 @@
-
-import nodemailer from "nodemailer"; // If using for admin email
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import nodemailer from "nodemailer";
 import crypto from "crypto";
+
+const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   try {
@@ -11,7 +11,6 @@ export async function POST(request: Request) {
     const signature = request.headers.get("x-webhook-signature");
     const secret = process.env.CASHFREE_WEBHOOK_SECRET!;
 
-    // Verify webhook signature
     const expectedSignature = crypto
       .createHmac("sha256", secret)
       .update(rawBody)
@@ -40,39 +39,30 @@ export async function POST(request: Request) {
 
       const cartItems = user.cart.items;
 
-      const orderData: {
-        orderId: string;
-        userId: string;
-        total: number;
-        status: string;
-        items?: { create: { productId: string; quantity: number; price: number }[] };
-      } = {
-        orderId: order_id,
-        userId: user.id,
-        total: orderAmount,
-        status: "PAID",
-      };
-
-      if (cartItems.length > 0) {
-        orderData.items = {
-          create: cartItems.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.product.price,
-          })),
-        };
-      }
-
       const createdOrder = await prisma.order.create({
-        data: orderData,
+        data: {
+          orderId: order_id,
+          total: orderAmount,
+          status: "PAID",
+          paymentId: payment_id,
+          user: {
+            connect: { id: user.id }, // ✅ Proper relation connect
+          },
+          items: {
+            create: cartItems.map((item) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              price: item.product.price,
+            })),
+          },
+        },
       });
 
-      // Clear the user's cart
+      // Clear cart after order
       await prisma.cartItem.deleteMany({
         where: { cartId: user.cart.id },
       });
 
-      // Send email to admin
       await sendOrderEmail(createdOrder, cartItems);
 
       return NextResponse.json({ success: true });
@@ -95,22 +85,15 @@ async function sendOrderEmail(order, items) {
     },
   });
 
-  let itemsList = "";
-  if (items.length > 0) {
-    itemsList = `
+  const itemsList = items.length
+    ? `
       <h3>Items:</h3>
       <ul>
-        ${items
-          .map(
-            (item) =>
-              `<li>${item.product.name} (x${item.quantity}) - ₹${item.product.price}</li>`
-          )
-          .join("")}
-      </ul>
-    `;
-  } else {
-    itemsList = `<p>Direct payment of ₹${order.total}</p>`;
-  }
+        ${items.map((item) =>
+          `<li>${item.product.name} (x${item.quantity}) - ₹${item.product.price}</li>`
+        ).join("")}
+      </ul>`
+    : `<p>Direct payment of ₹${order.total}</p>`;
 
   const emailBody = `
     <h2>New Order Received</h2>
@@ -121,7 +104,7 @@ async function sendOrderEmail(order, items) {
 
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
-    to: "gaurajay787@gmail.com", // ✅ Replace with your admin email
+    to: "gaurajay787@gmail.com",
     subject: "New Order Received",
     html: emailBody,
   });

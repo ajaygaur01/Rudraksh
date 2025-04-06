@@ -33,6 +33,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cookies-next": "^5.1.0",
+    "cors": "^2.8.5",
     "country-flag-icons": "^1.5.18",
     "currency-converter-lt": "^2.0.1",
     "date-fns": "^4.1.0",

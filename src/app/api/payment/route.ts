@@ -24,14 +24,35 @@ export async function POST(req: Request) {
   try {
     console.log("Using credentials - ID:", CLIENT_ID?.substring(0, 4) + "***");
 
-    const { userId, customer_name, customer_email, customer_phone, amount } = await req.json();
+    const {
+      userId,
+      customer_name,
+      customer_email,
+      customer_phone,
+      amount,
+      address,
+      city,
+      state,
+      zipcode,
+      country
+    } = await req.json();
 
-    if (!userId || !customer_name || !customer_email || !customer_phone) {
-      return NextResponse.json({ error: "Missing required details" }, { status: 400 });
+    // Validate required fields
+    if (
+      !userId ||
+      !customer_name ||
+      !customer_email ||
+      !customer_phone ||
+      !address ||
+      !city ||
+      !state ||
+      !zipcode ||
+      !country
+    ) {
+      return NextResponse.json({ error: "Missing required customer details" }, { status: 400 });
     }
 
     let total;
-    // Fetch cart only if no direct amount is passed
     if (amount) {
       total = parseFloat(amount);
     } else {
@@ -59,6 +80,10 @@ export async function POST(req: Request) {
         customer_name,
         customer_email,
       },
+      order_meta: {
+        return_url: "https://yourdomain.com/order/confirmation?order_id={order_id}",
+      },
+      order_note: `Shipping to: ${address}, ${city}, ${state}, ${zipcode}, ${country}`
     };
 
     const cashfreeResponse = await fetch("https://sandbox.cashfree.com/pg/orders", {

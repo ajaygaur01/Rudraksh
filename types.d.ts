@@ -129,7 +129,6 @@ interface ShippingAddress {
   country: string
 }
 
-
 type FetchUser =
   | { user: User  } // Success response
   | { error: string }; // Error response

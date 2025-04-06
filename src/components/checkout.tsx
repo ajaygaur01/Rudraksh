@@ -25,6 +25,8 @@ interface DecodedToken {
   [key: string]: unknown
 }
 
+
+
 export function CheckoutDrawer({ cart, isOpen, onClose }: CheckoutDrawerProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
@@ -172,4 +174,3 @@ export function CheckoutDrawer({ cart, isOpen, onClose }: CheckoutDrawerProps) {
     </Sheet>
   )
 }
-

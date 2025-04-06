@@ -12,19 +12,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-interface ShippingAddress {
-  name: string
-  email: string
-  phoneNumber: string
-  address: string
-  city: string
-  state: string
-  zipCode: string
-  country: string
-}
-
 interface ShippingFormProps {
-  onSubmit: (address: ShippingAddress) => void
+  onSubmit: (address: ShippingAddress) =>  Promise<void>
   isLoading: boolean
 }
 
@@ -121,9 +110,9 @@ export function ShippingForm({ onSubmit, isLoading }: ShippingFormProps) {
     setAddress((prev) => ({ ...prev, state: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit(address)
+    await onSubmit(address)
   }
 
   return (

@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
 import { Cashfree } from "cashfree-pg";
 import crypto from "crypto";
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -26,54 +26,40 @@ export async function POST(req: Request) {
 
     const {
       userId,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      orderId,
       customer_name,
       customer_email,
       customer_phone,
       amount,
-      address,
-      city,
-      state,
-      zipcode,
-      country
+      shipping_address,
+      cart_items
     } = await req.json();
 
-    // Validate required fields
     if (
       !userId ||
       !customer_name ||
       !customer_email ||
       !customer_phone ||
-      !address ||
-      !city ||
-      !state ||
-      !zipcode ||
-      !country
+      !shipping_address ||
+      !shipping_address.address ||
+      !shipping_address.city ||
+      !shipping_address.state ||
+      !shipping_address.zipCode ||
+      !shipping_address.country
     ) {
-      return NextResponse.json({ error: "Missing required customer details" }, { status: 400 });
+      return NextResponse.json({ error: "Missing required shipping or customer details" }, { status: 400 });
     }
 
-    let total;
-    if (amount) {
-      total = parseFloat(amount);
-    } else {
-      const cart = await prisma.cart.findUnique({
-        where: { userId },
-        include: { items: { include: { product: true } } },
-      });
+    const total = parseFloat(amount);
 
-      if (!cart || cart.items.length === 0) {
-        return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
-      }
-
-      total = cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-    }
-
-    const orderId = generateOrderId();
+    const generatedOrderId = generateOrderId();
+    const itemSummary = cart_items?.map(item => `${item.product?.name} x ${item.quantity}`).join(", ") || "No items";
 
     const requestPayload = {
       order_amount: total,
       order_currency: "INR",
-      order_id: orderId,
+      order_id: generatedOrderId,
       customer_details: {
         customer_id: userId,
         customer_phone,
@@ -83,7 +69,11 @@ export async function POST(req: Request) {
       order_meta: {
         return_url: "https://yourdomain.com/order/confirmation?order_id={order_id}",
       },
-      order_note: `Shipping to: ${address}, ${city}, ${state}, ${zipcode}, ${country}`
+      order_note: `
+      
+      Shipping to: ${shipping_address.address}, ${shipping_address.city}, ${shipping_address.state}, ${shipping_address.zipCode}, ${shipping_address.country}
+      Item Summary: ${itemSummary}
+      `
     };
 
     const cashfreeResponse = await fetch("https://sandbox.cashfree.com/pg/orders", {
@@ -106,7 +96,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       payment_session_id: response.payment_session_id,
-      order_id: orderId,
+      order_id: generatedOrderId,
     });
   } catch (error) {
     console.error("Payment Error:", error);

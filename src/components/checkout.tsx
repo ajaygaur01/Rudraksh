@@ -102,9 +102,13 @@ export function CheckoutDrawer({ cart, isOpen, onClose }: CheckoutDrawerProps) {
       } else {
         throw new Error("Missing payment session ID");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Payment error:", error);
-      setError(error.response?.data?.message || error.message || "Payment failed. Try again.");
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Payment failed. Try again.");
+      } else {
+        setError((error as Error).message || "Payment failed. Try again.");
+      }
       setIsLoading(false);
     }
   }

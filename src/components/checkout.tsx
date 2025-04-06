@@ -1,5 +1,5 @@
 "use client"
-
+import axios from "axios";
 import { useState } from "react"
 // import { X } from "lucide-react"
 import Cookies from "js-cookie";
@@ -84,34 +84,28 @@ export function CheckoutDrawer({ cart, isOpen, onClose }: CheckoutDrawerProps) {
     }
 
     try {
-      const response = await fetch("/api/payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId,
-          orderId: `order_${Math.random().toString(36).substring(2, 10)}`,
-          customer_name: address.name,
-          customer_email: address.email,
-          customer_phone: address.phoneNumber,
-          amount: total,
-          shipping_address: address,
-          cart_items: cart.items,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) throw new Error(data.message || "Payment failed")
-
+      const { data } = await axios.post("/api/payment", {
+        userId,
+        orderId: `order_${Math.random().toString(36).substring(2, 10)}`,
+        customer_name: address.name,
+        customer_email: address.email,
+        customer_phone: address.phoneNumber,
+        amount: total,
+        shipping_address: address,
+        cart_items: cart.items,
+      });
+    
+      console.log("------", data);
+    
       if (data.payment_session_id) {
-        handleRedirect(data.payment_session_id)
+        handleRedirect(data.payment_session_id);
       } else {
-        throw new Error("Missing payment session ID")
+        throw new Error("Missing payment session ID");
       }
-    } catch (error) {
-      console.error("Payment error:", error)
-      setError(error.message || "Payment failed. Try again.")
-      setIsLoading(false)
+    } catch (error: any) {
+      console.error("Payment error:", error);
+      setError(error.response?.data?.message || error.message || "Payment failed. Try again.");
+      setIsLoading(false);
     }
   }
 
